@@ -1,4 +1,4 @@
-package com.example.entregableandroidaldo;
+package com.example.MercadoEsclavoAldo;
 
 import org.junit.Test;
 
