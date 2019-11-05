@@ -5,11 +5,13 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.example.MercadoEsclavoAldo.R;
+import com.example.MercadoEsclavoAldo.model.Producto;
 import com.example.MercadoEsclavoAldo.view.fragment.HomeFragment;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements HomeFragment.notificador{
 
     private HomeFragment homeFragment;
     private FragmentManager fragmentManager;
@@ -24,5 +26,10 @@ public class MainActivity extends AppCompatActivity {
         FragmentTransaction unaTransaccion = fragmentManager.beginTransaction();
         unaTransaccion.replace(R.id.contenedorDeFragmentsMain, homeFragment);
         unaTransaccion.commit();
+    }
+
+    @Override
+    public void enviarNotificacion(Producto producto) {
+        Toast.makeText(MainActivity.this, "Seleccionaste " + producto.getDescripcion(), Toast.LENGTH_SHORT).show();
     }
 }

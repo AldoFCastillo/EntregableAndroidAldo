@@ -14,6 +14,14 @@ import android.view.ViewGroup;
 
 import com.example.MercadoEsclavoAldo.R;
 
+import com.example.MercadoEsclavoAldo.controller.ProductoController;
+import com.example.MercadoEsclavoAldo.dao.ProductoDAO;
+import com.example.MercadoEsclavoAldo.model.Producto;
+import com.example.MercadoEsclavoAldo.utils.ResultListener;
+import com.example.MercadoEsclavoAldo.view.adapter.ProductoAdapter;
+
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -21,10 +29,12 @@ import butterknife.ButterKnife;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements ProductoAdapter.ProductoAdapterListener {
 
     @BindView(R.id.recyclerHomeFragment)
     RecyclerView recyclerHomeFragment;
+
+    notificador notificadorFragment;
 
 
     public HomeFragment() {
@@ -34,6 +44,7 @@ public class HomeFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        this.notificadorFragment = (notificador) context;
     }
 
     @Override
@@ -45,8 +56,34 @@ public class HomeFragment extends Fragment {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
         recyclerHomeFragment.setLayoutManager(layoutManager);
 
+        /*ProductoDAO productoDAO = new ProductoDAO();
+        List<Producto> productoList = productoDAO.getProductos();
+        ProductoAdapter productoAdapter = new ProductoAdapter(productoList, HomeFragment.this);
+        recyclerHomeFragment.setAdapter(productoAdapter);
+        recyclerHomeFragment.setHasFixedSize(true);*/
+
+        ProductoController productoController = new ProductoController(new ProductoDAO());
+        productoController.getProductos(new ResultListener<List<Producto>>() {
+            @Override
+            public void onFinish(List<Producto> result) {
+                ProductoAdapter productoAdapter = new ProductoAdapter(result, HomeFragment.this);
+                recyclerHomeFragment.setAdapter(productoAdapter);
+                recyclerHomeFragment.setHasFixedSize(true);
+            }
+        });
+
 
         return view;
+    }
+
+    @Override
+    public void informarSeleccion(Producto producto) {
+        notificadorFragment.enviarNotificacion(producto);
+
+    }
+
+    public interface notificador {
+        public void enviarNotificacion(Producto producto);
     }
 
 }
