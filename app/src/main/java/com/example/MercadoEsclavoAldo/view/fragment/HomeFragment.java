@@ -56,11 +56,6 @@ public class HomeFragment extends Fragment implements ProductoAdapter.ProductoAd
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
         recyclerHomeFragment.setLayoutManager(layoutManager);
 
-        /*ProductoDAO productoDAO = new ProductoDAO();
-        List<Producto> productoList = productoDAO.getProductos();
-        ProductoAdapter productoAdapter = new ProductoAdapter(productoList, HomeFragment.this);
-        recyclerHomeFragment.setAdapter(productoAdapter);
-        recyclerHomeFragment.setHasFixedSize(true);*/
 
         ProductoController productoController = new ProductoController(new ProductoDAO());
         productoController.getProductos(new ResultListener<List<Producto>>() {
