@@ -3,4 +3,33 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="historia">
+
+       "\n • Surgió en 1999 en plan de negocios por Aldo Castillo\n • Inició en Argentina y rápidamente se expandió a Brasil, Colombia, Chile, Ecuador, México, Uruguay, Venezuela y más recientemente a Perú\n • Su inversión inicial fue a partir de 2 rondas de financiamiento de 7.6 y 46.5 millones \n"
+
+
+    </string>
+
+    <string name="mision">
+
+        "\nConseguir que la gente use el servicio primero y luego que estén dispuestos a pagar por este servicio y asegurarnos que MercadoEsclavo sea una aplicación con los mas altos niveles de seguridad a nivel mundial \n"
+
+    </string>
+
+    <string name="vision">
+
+       "\n • Desarrollar una tecnología que sea escalable y un producto que sea fácil de usar para los usuarios en América Latina\n • Adaptar el modelo de Estados Unidos para que funcione en América Latina\n • Expandirnos a América Latina y ser los lideres en cada uno de los países donde operamos \n"
+
+    </string>
+
+    <string name="valores">
+
+        "\nDesarrollar una comunidad de intercambio leal y vivaz, esto es una piedra angular en el modelo de MercadoEsclavo. Esta comunidad se nutre mediante la comunicación franca y honesta y se erige sobre 5 valores fundamentales que la empresa espera que sus miembros honren:\n • Creemos que la gente es básicamente buena.\n • Creemos que alguien tiene algo que aportar.\n • Creemos que en un ambiente abierto y honesto puede hacer que brote lo mejor de la gente.\n • Reconocemos y aceptamos a cada quien como individuo único.\n • Les alentamos a tratar a los demás como quieres ser tratado. \n"
+
+    </string>
+
+
+
+
 </resources>
