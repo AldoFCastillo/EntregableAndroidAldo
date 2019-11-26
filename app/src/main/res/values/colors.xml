@@ -3,4 +3,18 @@
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
+
+
+    <!-- Fondos -->
+    <color name="colorFondoBlanco">#ffffff</color>
+    <color name="colorFondoGris">#E0DDDD</color>
+    <color name="colorFondoAmarilloClaro">#FFEB3B</color>
+    <color name="colorFondoAmarillo">#F0D503</color>
+
+    <!-- Textos #7c0003-->
+    <color name="colorTextoClaro">#474646</color>
+    <color name="colorTextoOscuro">#000000</color>
+    <color name="colorTextoBlanco">#ffffff</color>
+
+
 </resources>

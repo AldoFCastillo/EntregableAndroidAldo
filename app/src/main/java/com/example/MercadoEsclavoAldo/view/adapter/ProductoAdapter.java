@@ -13,7 +13,6 @@ import com.bumptech.glide.Glide;
 import com.example.MercadoEsclavoAldo.R;
 import com.example.MercadoEsclavoAldo.model.Producto;
 
-import java.security.PrivateKey;
 import java.util.List;
 
 import butterknife.BindView;
@@ -79,7 +78,7 @@ public class ProductoAdapter extends RecyclerView.Adapter {
         }
 
         public void bind(Producto producto) {
-            textViewDescripcionCelda.setText(producto.getDescripcion());
+            textViewDescripcionCelda.setText(producto.getTitulo());
             textViewPrecioCelda.setText(producto.getPrecio());
             Glide.with(itemView).load(producto.getImagen()).into(imageViewCelda);
 

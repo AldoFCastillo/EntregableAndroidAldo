@@ -44,7 +44,7 @@
                 android:layout_gravity="bottom"
                 android:fontFamily="sans-serif-medium"
                 android:background="#7C000000"
-                android:textColor="#49F04E"
+                android:textColor="@color/colorTextoBlanco"
                 android:textSize="24sp"
                 android:textStyle="bold" />
 

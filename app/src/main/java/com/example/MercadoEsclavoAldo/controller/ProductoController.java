@@ -10,8 +10,8 @@ public class ProductoController {
 
     private ProductoDAO productoDAO;
 
-    public ProductoController(ProductoDAO productoDAO) {
-        this.productoDAO = productoDAO;
+    public ProductoController() {
+        this.productoDAO = new ProductoDAO();
     }
 
     public void getProductos(final ResultListener<List<Producto>> listenerDeLaView) {

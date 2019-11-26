@@ -57,7 +57,7 @@ public class HomeFragment extends Fragment implements ProductoAdapter.ProductoAd
         recyclerHomeFragment.setLayoutManager(layoutManager);
 
 
-        ProductoController productoController = new ProductoController(new ProductoDAO());
+        ProductoController productoController = new ProductoController();
         productoController.getProductos(new ResultListener<List<Producto>>() {
             @Override
             public void onFinish(List<Producto> result) {

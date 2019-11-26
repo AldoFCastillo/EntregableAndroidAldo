@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import com.example.MercadoEsclavoAldo.R;
 import com.example.MercadoEsclavoAldo.model.Producto;
 import com.example.MercadoEsclavoAldo.view.fragment.AboutUsFragment;
+import com.example.MercadoEsclavoAldo.view.fragment.DetailsFragment;
 import com.example.MercadoEsclavoAldo.view.fragment.HomeFragment;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
@@ -25,6 +26,7 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.noti
 
     private HomeFragment homeFragment = new HomeFragment();
     private AboutUsFragment aboutUSFragment = new AboutUsFragment();
+    private DetailsFragment detailsFragment = new DetailsFragment();
     private FragmentManager fragmentManager;
     @BindView(R.id.contenedorDeFragmentsMain)
     CoordinatorLayout coordinatorLayout;
@@ -72,6 +74,11 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.noti
     @Override
     public void enviarNotificacion(Producto producto) {
 
-        Snackbar.make(coordinatorLayout, "Seleccionaste " + producto.getDescripcion(), Snackbar.LENGTH_SHORT).show();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(DetailsFragment.KEY_PRODUCTO, producto);
+        detailsFragment.setArguments(bundle);
+        setFragment(detailsFragment);
+
+        Snackbar.make(coordinatorLayout, "Seleccionaste " + producto.getTitulo(), Snackbar.LENGTH_SHORT).show();
     }
 }

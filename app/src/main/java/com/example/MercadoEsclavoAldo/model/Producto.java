@@ -3,27 +3,27 @@ package com.example.MercadoEsclavoAldo.model;
 import java.io.Serializable;
 
 public class Producto implements Serializable {
-    private String descripcion;
+    private String titulo;
     private String precio;
     private Integer imagen;
-    private String detalle;
+    private String descripcion;
 
     public Producto() {
     }
 
-    public Producto(String descripcion, String precio, Integer imagen, String detalle) {
-        this.descripcion = descripcion;
+    public Producto(String titulo, String precio, Integer imagen, String descripcion) {
+        this.titulo = titulo;
         this.precio = precio;
         this.imagen = imagen;
-        this.detalle = detalle;
-    }
-
-    public String getDescripcion() {
-        return descripcion;
-    }
-
-    public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
+    }
+
+    public String getTitulo() {
+        return titulo;
+    }
+
+    public void setTitulo(String titulo) {
+        this.titulo = titulo;
     }
 
     public String getPrecio() {
@@ -42,11 +42,11 @@ public class Producto implements Serializable {
         this.imagen = imagen;
     }
 
-    public String getDetalle() {
-        return detalle;
+    public String getDescripcion() {
+        return descripcion;
     }
 
-    public void setDetalle(String detalle) {
-        this.detalle = detalle;
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
     }
 }
