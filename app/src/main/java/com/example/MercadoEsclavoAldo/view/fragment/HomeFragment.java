@@ -6,23 +6,23 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager.widget.ViewPager;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.MercadoEsclavoAldo.R;
 
 import com.example.MercadoEsclavoAldo.controller.ProductoController;
-import com.example.MercadoEsclavoAldo.dao.ProductoDAO;
 import com.example.MercadoEsclavoAldo.model.Producto;
+import com.example.MercadoEsclavoAldo.model.Result;
 import com.example.MercadoEsclavoAldo.utils.ResultListener;
 import com.example.MercadoEsclavoAldo.view.activity.DetailsActivity;
-import com.example.MercadoEsclavoAldo.view.adapter.DetailsViewPagerAdapter;
 import com.example.MercadoEsclavoAldo.view.adapter.ProductoAdapter;
 
 import java.util.ArrayList;
@@ -39,8 +39,13 @@ public class HomeFragment extends Fragment implements ProductoAdapter.ProductoAd
 
     @BindView(R.id.recyclerHomeFragment)
     RecyclerView recyclerHomeFragment;
+    @BindView(R.id.busqueda)
+    EditText busqueda;
+    @BindView(R.id.button)
+    Button button;
 
     private List<Producto> productoList = new ArrayList<>();
+    private String laBusqueda;
 
 
 
@@ -80,6 +85,24 @@ public class HomeFragment extends Fragment implements ProductoAdapter.ProductoAd
                 recyclerHomeFragment.setHasFixedSize(true);
             }
         });
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                laBusqueda = busqueda.getText().toString();
+
+        productoController.getSearchResults(new ResultListener<Result>() {
+            @Override
+            public void onFinish(Result result) {
+                productoList = result.getResults();
+                String titulo = productoList.get(1).getTitle();
+                Toast.makeText(getContext(), titulo, Toast.LENGTH_SHORT).show();
+            }
+        }, laBusqueda);
+
+            }
+        });
+
 
 
         return view;
