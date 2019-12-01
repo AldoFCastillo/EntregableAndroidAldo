@@ -7,6 +7,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -70,8 +71,8 @@ public class ProductoAdapter extends RecyclerView.Adapter {
                 public void onClick(View v) {
 
                     int adapterPosition = getAdapterPosition();
-                    Producto producto = productoList.get(adapterPosition);
-                    productoAdapterListener.informarSeleccion(producto);
+                  //  Producto producto = productoList.get(adapterPosition);
+                    productoAdapterListener.informarSeleccion(adapterPosition);
 
                 }
             });
@@ -87,6 +88,6 @@ public class ProductoAdapter extends RecyclerView.Adapter {
     }
 
     public interface ProductoAdapterListener {
-        public void informarSeleccion(Producto producto);
+        public void informarSeleccion(Integer adapterPosition);
     }
 }

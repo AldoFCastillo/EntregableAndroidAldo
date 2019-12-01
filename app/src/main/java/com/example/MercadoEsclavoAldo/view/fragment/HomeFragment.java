@@ -4,9 +4,12 @@ package com.example.MercadoEsclavoAldo.view.fragment;
 import android.content.Context;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,8 +21,11 @@ import com.example.MercadoEsclavoAldo.controller.ProductoController;
 import com.example.MercadoEsclavoAldo.dao.ProductoDAO;
 import com.example.MercadoEsclavoAldo.model.Producto;
 import com.example.MercadoEsclavoAldo.utils.ResultListener;
+import com.example.MercadoEsclavoAldo.view.activity.DetailsActivity;
+import com.example.MercadoEsclavoAldo.view.adapter.DetailsViewPagerAdapter;
 import com.example.MercadoEsclavoAldo.view.adapter.ProductoAdapter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -34,7 +40,12 @@ public class HomeFragment extends Fragment implements ProductoAdapter.ProductoAd
     @BindView(R.id.recyclerHomeFragment)
     RecyclerView recyclerHomeFragment;
 
-    notificador notificadorFragment;
+    private List<Producto> productoList = new ArrayList<>();
+
+
+
+    private notificador notificadorFragment;
+
 
 
     public HomeFragment() {
@@ -42,7 +53,7 @@ public class HomeFragment extends Fragment implements ProductoAdapter.ProductoAd
     }
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         this.notificadorFragment = (notificador) context;
     }
@@ -55,12 +66,15 @@ public class HomeFragment extends Fragment implements ProductoAdapter.ProductoAd
         ButterKnife.bind(this, view);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
         recyclerHomeFragment.setLayoutManager(layoutManager);
+        DetailsActivity detailsActivity = new DetailsActivity();
+
 
 
         ProductoController productoController = new ProductoController();
         productoController.getProductos(new ResultListener<List<Producto>>() {
             @Override
             public void onFinish(List<Producto> result) {
+                productoList = result;
                 ProductoAdapter productoAdapter = new ProductoAdapter(result, HomeFragment.this);
                 recyclerHomeFragment.setAdapter(productoAdapter);
                 recyclerHomeFragment.setHasFixedSize(true);
@@ -72,13 +86,14 @@ public class HomeFragment extends Fragment implements ProductoAdapter.ProductoAd
     }
 
     @Override
-    public void informarSeleccion(Producto producto) {
-        notificadorFragment.enviarNotificacion(producto);
+    public void informarSeleccion(Integer adapterPosition) {
+        notificadorFragment.enviarNotificacion(adapterPosition, productoList);
 
     }
 
+
     public interface notificador {
-        public void enviarNotificacion(Producto producto);
+        public void enviarNotificacion(Integer adapterPosition, List<Producto> productoList);
     }
 
 }

@@ -15,6 +15,7 @@ import com.bumptech.glide.Glide;
 import com.example.MercadoEsclavoAldo.R;
 import com.example.MercadoEsclavoAldo.controller.ProductoController;
 import com.example.MercadoEsclavoAldo.model.Producto;
+import com.example.MercadoEsclavoAldo.model.Result;
 import com.example.MercadoEsclavoAldo.utils.ResultListener;
 
 import java.util.List;
@@ -25,10 +26,9 @@ import butterknife.ButterKnife;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class DetailsFragment extends Fragment {
+public class DetailsFragment extends Fragment  {
 
     public static final String KEY_PRODUCTO = "producto";
-
 
     @BindView(R.id.imageViewDetails)
     ImageView imageViewDetails;
@@ -42,6 +42,16 @@ public class DetailsFragment extends Fragment {
 
     public DetailsFragment() {
         // Required empty public constructor
+    }
+
+
+
+    public static DetailsFragment getInstance(Producto producto){
+        DetailsFragment detailsFragment = new DetailsFragment();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(KEY_PRODUCTO, producto);
+        detailsFragment.setArguments(bundle);
+        return detailsFragment;
     }
 
 
@@ -66,5 +76,6 @@ public class DetailsFragment extends Fragment {
 
         return view;
     }
+
 
 }
