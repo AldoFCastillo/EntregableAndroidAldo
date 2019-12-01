@@ -76,7 +76,19 @@ public class HomeFragment extends Fragment implements ProductoAdapter.ProductoAd
 
 
         ProductoController productoController = new ProductoController();
-        productoController.getProductos(new ResultListener<List<Producto>>() {
+        productoController.getOfertas(new ResultListener<Result>() {
+            @Override
+            public void onFinish(Result result) {
+                productoList = result.getResults();
+                ProductoAdapter productoAdapter = new ProductoAdapter(productoList, HomeFragment.this);
+                recyclerHomeFragment.setAdapter(productoAdapter);
+                recyclerHomeFragment.setItemViewCacheSize(20);
+                recyclerHomeFragment.setHasFixedSize(true);
+
+            }
+        },"ofertas");
+
+        /*productoController.getProductos(new ResultListener<List<Producto>>() {
             @Override
             public void onFinish(List<Producto> result) {
                 productoList = result;
@@ -84,7 +96,7 @@ public class HomeFragment extends Fragment implements ProductoAdapter.ProductoAd
                 recyclerHomeFragment.setAdapter(productoAdapter);
                 recyclerHomeFragment.setHasFixedSize(true);
             }
-        });
+        });*/
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -95,8 +107,13 @@ public class HomeFragment extends Fragment implements ProductoAdapter.ProductoAd
             @Override
             public void onFinish(Result result) {
                 productoList = result.getResults();
-                String titulo = productoList.get(1).getTitle();
-                Toast.makeText(getContext(), titulo, Toast.LENGTH_SHORT).show();
+
+                productoList = result.getResults();
+                ProductoAdapter productoAdapter = new ProductoAdapter(productoList, HomeFragment.this);
+                recyclerHomeFragment.setAdapter(productoAdapter);
+                recyclerHomeFragment.setItemViewCacheSize(20);
+                recyclerHomeFragment.setHasFixedSize(true);
+
             }
         }, laBusqueda);
 

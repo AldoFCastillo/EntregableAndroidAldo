@@ -71,7 +71,6 @@ public class ProductoAdapter extends RecyclerView.Adapter {
                 public void onClick(View v) {
 
                     int adapterPosition = getAdapterPosition();
-                  //  Producto producto = productoList.get(adapterPosition);
                     productoAdapterListener.informarSeleccion(adapterPosition);
 
                 }
@@ -79,9 +78,15 @@ public class ProductoAdapter extends RecyclerView.Adapter {
         }
 
         public void bind(Producto producto) {
-            textViewDescripcionCelda.setText(producto.getTitulo());
-            textViewPrecioCelda.setText(producto.getPrecio());
-            Glide.with(itemView).load(producto.getImagen()).into(imageViewCelda);
+            textViewDescripcionCelda.setText(producto.getTitle());
+            String precio = "$ "+ producto.getPrice();
+            textViewPrecioCelda.setText(precio);
+
+            String url = producto.getThumbnail();
+            String https = "https";
+            url = url.substring(4);
+            url = https+url;
+            Glide.with(itemView).load(url).into(imageViewCelda);
 
 
         }

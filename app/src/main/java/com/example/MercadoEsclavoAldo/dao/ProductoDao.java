@@ -1,7 +1,9 @@
 package com.example.MercadoEsclavoAldo.dao;
 
 import com.example.MercadoEsclavoAldo.R;
+import com.example.MercadoEsclavoAldo.model.Description;
 import com.example.MercadoEsclavoAldo.model.Producto;
+import com.example.MercadoEsclavoAldo.model.ProductoDetalles;
 import com.example.MercadoEsclavoAldo.model.Result;
 import com.example.MercadoEsclavoAldo.service.MercadoService;
 import com.example.MercadoEsclavoAldo.utils.ResultListener;
@@ -15,13 +17,13 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class productoDao {
+public class ProductoDao {
 
     public static final String BASE_URL = "https://api.mercadolibre.com";
     protected Retrofit retrofit;
     MercadoService mercadoService;
 
-    public productoDao() {
+    public ProductoDao() {
         retrofit = new Retrofit
                 .Builder()
                 .baseUrl(BASE_URL)
@@ -71,6 +73,78 @@ public class productoDao {
 
             @Override
             public void onFailure(Call<Result> call, Throwable t) {
+                String message = t.getMessage();
+                System.out.println("ha ocurrido un error" + message);
+                t.printStackTrace();
+
+            }
+        });
+
+    }
+
+    public void getOfertas(final ResultListener<Result> resultListener, String query) {
+
+        Call<Result> call = mercadoService.getOfertas(query);
+
+        call.enqueue(new Callback<Result>() {
+            @Override
+            public void onResponse(Call<Result> call, Response<Result> response) {
+                Result searchResult = response.body();
+
+                resultListener.onFinish(searchResult);
+
+            }
+
+            @Override
+            public void onFailure(Call<Result> call, Throwable t) {
+                String message = t.getMessage();
+                System.out.println("ha ocurrido un error" + message);
+                t.printStackTrace();
+
+            }
+        });
+
+    }
+
+    public void getProducto(final ResultListener<ProductoDetalles> resultListener, String path) {
+
+        Call<ProductoDetalles> call = mercadoService.getProducto(path);
+
+        call.enqueue(new Callback<ProductoDetalles>() {
+            @Override
+            public void onResponse(Call<ProductoDetalles> call, Response<ProductoDetalles> response) {
+                ProductoDetalles searchResult = response.body();
+
+                resultListener.onFinish(searchResult);
+
+            }
+
+            @Override
+            public void onFailure(Call<ProductoDetalles> call, Throwable t) {
+                String message = t.getMessage();
+                System.out.println("ha ocurrido un error" + message);
+                t.printStackTrace();
+
+            }
+        });
+
+    }
+
+    public void getDescripcion(final ResultListener<Description> resultListener, String path) {
+
+        Call<Description> call = mercadoService.getDescripcion(path);
+
+        call.enqueue(new Callback<Description>() {
+            @Override
+            public void onResponse(Call<Description> call, Response<Description> response) {
+                Description searchResult = response.body();
+
+                resultListener.onFinish(searchResult);
+
+            }
+
+            @Override
+            public void onFailure(Call<Description> call, Throwable t) {
                 String message = t.getMessage();
                 System.out.println("ha ocurrido un error" + message);
                 t.printStackTrace();

@@ -36,8 +36,7 @@
                     android:id="@+id/textViewTituloDetails"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/colorFondoGris"
-                    android:fontFamily="sans-serif-medium"
+                    android:fontFamily="sans-serif-light"
                     android:paddingStart="10dp"
                     android:text="@string/hello_blank_fragment"
                     android:textColor="@color/colorTextoOscuro"
@@ -48,8 +47,7 @@
                     android:id="@+id/textViewPrecioDetails"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
-                    android:background="@color/colorFondoGris"
-                    android:fontFamily="sans-serif-medium"
+                    android:fontFamily="sans-serif-light"
                     android:paddingStart="10dp"
                     android:text="@string/hello_blank_fragment"
                     android:textColor="@color/colorTextoOscuro"
@@ -66,15 +64,31 @@
             app:cardCornerRadius="10dp"
             app:cardUseCompatPadding="true">
 
-            <TextView
-                android:id="@+id/textViewDescripcionDetails"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="sans-serif-medium"
-                android:paddingStart="10dp"
-                android:text="@string/hello_blank_fragment"
-                android:textColor="@color/colorTextoOscuro"
-                android:textSize="20sp" />
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:textColor="@color/colorTextoOscuro"
+                    android:fontFamily="sans-serif"
+                    android:textSize="20sp"
+                    android:paddingStart="10dp"
+                    android:text="Descripción" />
+
+                <TextView
+                    android:id="@+id/textViewDescripcionDetails"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:fontFamily="sans-serif-light"
+                    android:paddingStart="10dp"
+                    android:textColor="@color/colorTextoOscuro"
+                    android:textSize="18sp" />
+            </LinearLayout>
 
         </androidx.cardview.widget.CardView>
 
