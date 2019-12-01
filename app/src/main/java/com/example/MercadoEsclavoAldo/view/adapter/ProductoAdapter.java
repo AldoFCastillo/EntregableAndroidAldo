@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.example.MercadoEsclavoAldo.R;
 import com.example.MercadoEsclavoAldo.model.Producto;
@@ -42,7 +43,7 @@ public class ProductoAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         Producto producto = productoList.get(position);
-        ProductoViewHolder productoViewHolder =  (ProductoViewHolder) holder;
+        ProductoViewHolder productoViewHolder = (ProductoViewHolder) holder;
         productoViewHolder.bind(producto);
 
     }
@@ -60,6 +61,11 @@ public class ProductoAdapter extends RecyclerView.Adapter {
         TextView textViewPrecioCelda;
         @BindView(R.id.imageViewCelda)
         ImageView imageViewCelda;
+        @BindView(R.id.lottieLikeCelda)
+        LottieAnimationView lottieLikeCelda;
+        @BindView(R.id.imageViewUnlikeCelda)
+        ImageView imageViewUnlikeCelda;
+
 
 
         public ProductoViewHolder(@NonNull View itemView) {
@@ -75,17 +81,41 @@ public class ProductoAdapter extends RecyclerView.Adapter {
 
                 }
             });
+
+            imageViewUnlikeCelda.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    imageViewUnlikeCelda.setVisibility(View.GONE);
+                    lottieLikeCelda.setVisibility(View.VISIBLE);
+                    lottieLikeCelda.playAnimation();
+
+                }
+            });
+
+            lottieLikeCelda.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    lottieLikeCelda.setSpeed(2);
+
+                    imageViewUnlikeCelda.setVisibility(View.VISIBLE);
+                    lottieLikeCelda.setVisibility(View.GONE);
+
+
+
+                }
+            });
         }
 
         public void bind(Producto producto) {
             textViewDescripcionCelda.setText(producto.getTitle());
-            String precio = "$ "+ producto.getPrice();
+            String precio = "$ " + producto.getPrice();
             textViewPrecioCelda.setText(precio);
 
             String url = producto.getThumbnail();
             String https = "https";
             url = url.substring(4);
-            url = https+url;
+            url = https + url;
             Glide.with(itemView).load(url).into(imageViewCelda);
 
 
