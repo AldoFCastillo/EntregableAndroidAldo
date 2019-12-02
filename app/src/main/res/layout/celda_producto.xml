@@ -39,31 +39,29 @@
 
             <com.airbnb.lottie.LottieAnimationView
                 android:id="@+id/lottieLikeCelda"
-                android:layout_width="110dp"
-                android:layout_height="110dp"
-                android:scaleType="center"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:scaleType="centerCrop"
                 android:visibility="gone"
                 app:layout_constraintBottom_toTopOf="@id/textViewDescripcionCelda"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/textViewDescripcionCelda"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0"
+                app:layout_constraintVertical_bias="-1"
                 app:lottie_autoPlay="false"
                 app:lottie_fileName="like.json"
                 app:lottie_imageAssetsFolder="assets" />
 
             <ImageView
                 android:id="@+id/imageViewUnlikeCelda"
-                android:layout_width="14dp"
-                android:layout_height="14dp"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 android:src="@drawable/unlike24dp"
                 android:visibility="visible"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/textViewDescripcionCelda"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.54"
                 app:layout_constraintStart_toEndOf="@id/textViewDescripcionCelda"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.41" />
+                app:layout_constraintTop_toTopOf="parent" />
 
 
             <TextView
