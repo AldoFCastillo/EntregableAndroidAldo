@@ -1,6 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
+
+    <item
+        android:id="@+id/navigationViewLoginItem"
+        android:title="@string/navigation_login">
+        <menu>
+            <item
+                android:id="@+id/navigationViewFavoritosItem"
+                android:title="@string/navigation_favoritos" />
+
+
+            <!--<item
+                android:id="@+id/navigationViewMiListaItem"
+                android:title="@string/navigation_milista" />
+
+            <item
+                android:id="@+id/navigationViewNotificacionesItem"
+                android:title="@string/navigation_notificaciones" />-->
+
+            <item
+                android:id="@+id/navigationViewCerrarSesionItem"
+                android:title="Cerrar Sesion"
+                android:visible="true"/>
+
+
+        </menu>
+    </item>
+
     <item
         android:title="About us"
         android:icon="@drawable/ic_people_black_24dp"
