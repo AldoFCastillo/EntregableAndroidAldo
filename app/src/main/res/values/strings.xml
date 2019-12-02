@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MercadoEsclavoAldo</string>
+    <string name="app_name">Mercado Esclavo</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
@@ -36,6 +36,9 @@
     <string name="navigation_estadisticas">Estadisticas</string>
     <string name="navigation_notificaciones">Notificaciones</string>
     <string name="navigation_milista">Mi Lista</string>
+
+    <string name="open_drawer">Open Drawer</string>
+    <string name="close_drawer">Close Drawer</string>
 
 
 </resources>

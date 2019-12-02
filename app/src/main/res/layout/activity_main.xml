@@ -5,7 +5,13 @@
     android:id="@+id/LinearActivityMain"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.activity.MainActivity">
+    tools:context=".view.activity.MainActivity"
+    android:orientation="vertical">
+
+    <include layout="@layout/toolbar"
+        android:id="@+id/toolbarMain">
+
+    </include>
 
     <androidx.drawerlayout.widget.DrawerLayout
         android:id="@+id/drawerMainActivity"

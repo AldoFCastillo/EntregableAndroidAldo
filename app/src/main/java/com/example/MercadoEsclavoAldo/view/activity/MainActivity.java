@@ -1,7 +1,9 @@
 package com.example.MercadoEsclavoAldo.view.activity;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
@@ -40,6 +42,8 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.noti
     DrawerLayout drawerMainActivity;
     @BindView(R.id.navigationViewHome)
     NavigationView navigationViewHome;
+    @BindView(R.id.toolbarMain)
+    Toolbar toolbarMain;
 
 
     @Override
@@ -52,6 +56,16 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.noti
         setFragment(homeFragment);
 
         setNavigationView();
+
+        setSupportActionBar(toolbarMain);
+        ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(
+                this,
+                drawerMainActivity,
+                toolbarMain,
+                R.string.open_drawer,
+                R.string.close_drawer);
+        drawerMainActivity.addDrawerListener(actionBarDrawerToggle);
+        actionBarDrawerToggle.syncState();
 
 
     }
