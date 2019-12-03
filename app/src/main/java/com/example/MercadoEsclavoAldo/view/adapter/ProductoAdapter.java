@@ -1,5 +1,6 @@
 package com.example.MercadoEsclavoAldo.view.adapter;
 
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,13 +15,15 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.example.MercadoEsclavoAldo.R;
 import com.example.MercadoEsclavoAldo.model.Producto;
+import com.example.MercadoEsclavoAldo.view.activity.ItemMoveCallback;
 
+import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class ProductoAdapter extends RecyclerView.Adapter {
+public class ProductoAdapter extends RecyclerView.Adapter implements ItemMoveCallback.ItemTouchHelperContract {
 
     private List<Producto> productoList;
     private ProductoAdapterListener productoAdapterListener;
@@ -53,7 +56,31 @@ public class ProductoAdapter extends RecyclerView.Adapter {
         return productoList.size();
     }
 
-    class ProductoViewHolder extends RecyclerView.ViewHolder {
+    @Override
+    public void onRowMoved(int fromPosition, int toPosition) {
+        if (fromPosition < toPosition) {
+            for (int i = fromPosition; i < toPosition; i++) {
+                Collections.swap(productoList, i, i + 1);
+            }
+        } else {
+            for (int i = fromPosition; i > toPosition; i--) {
+                Collections.swap(productoList, i, i - 1);
+            }
+        }
+        notifyItemMoved(fromPosition, toPosition);
+    }
+
+    @Override
+    public void onRowSelected(ProductoViewHolder myViewHolder) {
+        myViewHolder.rowView.setBackgroundColor(Color.GRAY);
+    }
+
+    @Override
+    public void onRowClear(ProductoViewHolder myViewHolder) {
+        myViewHolder.rowView.setBackgroundColor(Color.WHITE);
+    }
+
+    public class ProductoViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.textViewDescripcionCelda)
         TextView textViewDescripcionCelda;
@@ -66,10 +93,13 @@ public class ProductoAdapter extends RecyclerView.Adapter {
         @BindView(R.id.imageViewUnlikeCelda)
         ImageView imageViewUnlikeCelda;
 
+        View rowView;
+
 
 
         public ProductoViewHolder(@NonNull View itemView) {
             super(itemView);
+            rowView=itemView;
 
             ButterKnife.bind(this, itemView);
             itemView.setOnClickListener(new View.OnClickListener() {

@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -23,6 +24,7 @@ import com.example.MercadoEsclavoAldo.model.Producto;
 import com.example.MercadoEsclavoAldo.model.Result;
 import com.example.MercadoEsclavoAldo.utils.ResultListener;
 import com.example.MercadoEsclavoAldo.view.activity.DetailsActivity;
+import com.example.MercadoEsclavoAldo.view.activity.ItemMoveCallback;
 import com.example.MercadoEsclavoAldo.view.adapter.ProductoAdapter;
 
 import java.util.ArrayList;
@@ -81,6 +83,13 @@ public class HomeFragment extends Fragment implements ProductoAdapter.ProductoAd
             public void onFinish(Result result) {
                 productoList = result.getResults();
                 ProductoAdapter productoAdapter = new ProductoAdapter(productoList, HomeFragment.this);
+
+                ItemTouchHelper.Callback callback =
+                        new ItemMoveCallback(productoAdapter);
+
+                ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
+                touchHelper.attachToRecyclerView(recyclerHomeFragment);
+
                 recyclerHomeFragment.setAdapter(productoAdapter);
                 recyclerHomeFragment.setItemViewCacheSize(20);
                 recyclerHomeFragment.setHasFixedSize(true);
