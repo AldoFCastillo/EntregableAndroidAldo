@@ -1,6 +1,10 @@
 package com.example.MercadoEsclavoAldo.view.activity;
 
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -10,12 +14,14 @@ import androidx.viewpager.widget.ViewPager;
 import android.content.Intent;
 import android.os.Bundle;
 
+
 import com.example.MercadoEsclavoAldo.R;
 import com.example.MercadoEsclavoAldo.model.Producto;
 import com.example.MercadoEsclavoAldo.model.Result;
 import com.example.MercadoEsclavoAldo.view.adapter.DetailsViewPagerAdapter;
 import com.example.MercadoEsclavoAldo.view.fragment.DetailsFragment;
 import com.example.MercadoEsclavoAldo.view.fragment.HomeFragment;
+import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
@@ -36,6 +42,9 @@ public class DetailsActivity extends AppCompatActivity {
 
     @BindView(R.id.viewPagerDetails)
     ViewPager viewPagerDetails;
+    @BindView(R.id.toolbarDetails)
+    Toolbar toolbarDetails;
+
 
     private Integer adapterPosition;
     private List<Producto> productoList = new ArrayList<>();
@@ -46,6 +55,10 @@ public class DetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_details);
 
         ButterKnife.bind(this);
+
+        setSupportActionBar(toolbarDetails);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
@@ -64,24 +77,17 @@ public class DetailsActivity extends AppCompatActivity {
 
         detailsFragment.setArguments(bundle);
 
-
-
-
-
     }
 
 
-
     private void cargarListaDeSeries(List<Producto> productoList) {
-        for (Producto producto : productoList){
+        for (Producto producto : productoList) {
             DetailsFragment detailsFragment = DetailsFragment.getInstance(producto);
             fragmentList.add(detailsFragment);
         }
         detailsViewPagerAdapter = new DetailsViewPagerAdapter(getSupportFragmentManager(), fragmentList);
         viewPagerDetails.setAdapter(detailsViewPagerAdapter);
     }
-
-
 
 
 }
