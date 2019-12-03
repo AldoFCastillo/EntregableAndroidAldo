@@ -8,14 +8,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.example.MercadoEsclavoAldo.R;
 import com.example.MercadoEsclavoAldo.model.Producto;
-import com.example.MercadoEsclavoAldo.view.activity.ItemMoveCallback;
+import com.example.MercadoEsclavoAldo.utils.ItemMoveCallback;
 
 import java.util.Collections;
 import java.util.List;

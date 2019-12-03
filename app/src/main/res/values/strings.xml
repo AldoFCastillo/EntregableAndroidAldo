@@ -35,7 +35,7 @@
     <string name="navigation_favoritos">Favoritos</string>
     <string name="navigation_estadisticas">Estadisticas</string>
     <string name="navigation_notificaciones">Notificaciones</string>
-    <string name="navigation_milista">Mi Lista</string>
+    <string name="navigation_perfil">Mi Perfil</string>
 
     <string name="open_drawer">Open Drawer</string>
     <string name="close_drawer">Close Drawer</string>

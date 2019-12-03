@@ -6,32 +6,44 @@
         android:id="@+id/navigationViewLoginItem"
         android:title="@string/navigation_login">
         <menu>
+
+
+            <item
+                android:id="@+id/navigationViewPerfil"
+                android:icon="@drawable/ic_streetview_black_24dp"
+                android:title="@string/navigation_perfil" />
+
             <item
                 android:id="@+id/navigationViewFavoritosItem"
+                android:icon="@drawable/ic_favorite_black_24dp"
                 android:title="@string/navigation_favoritos" />
-
-
-            <!--<item
-                android:id="@+id/navigationViewMiListaItem"
-                android:title="@string/navigation_milista" />
-
-            <item
-                android:id="@+id/navigationViewNotificacionesItem"
-                android:title="@string/navigation_notificaciones" />-->
 
             <item
                 android:id="@+id/navigationViewCerrarSesionItem"
+                android:icon="@drawable/ic_exit_to_app_black_24dp"
                 android:title="Cerrar Sesion"
-                android:visible="true"/>
+                android:visible="true" />
 
+            <!--<item
+                android:id="@+id/navigationViewNotificacionesItem"
+                android:title="@string/navigation_notificaciones" />-->
 
         </menu>
+
+
     </item>
 
     <item
-        android:title="About us"
-        android:icon="@drawable/ic_people_black_24dp"
-        android:id="@+id/aboutUsMenuNavigation"
-        />
+        android:id="@+id/separadorMercado"
+        android:title="Mercado Esclavo" >
+    <menu>
+
+        <item
+            android:id="@+id/aboutUsMenuNavigation"
+            android:icon="@drawable/ic_people_black_24dp"
+            android:title="About us" />
+    </menu>
+
+    </item>
 
 </menu>

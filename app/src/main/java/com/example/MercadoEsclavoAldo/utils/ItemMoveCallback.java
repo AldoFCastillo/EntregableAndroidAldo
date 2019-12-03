@@ -1,4 +1,4 @@
-package com.example.MercadoEsclavoAldo.view.activity;
+package com.example.MercadoEsclavoAldo.utils;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.ItemTouchHelper;

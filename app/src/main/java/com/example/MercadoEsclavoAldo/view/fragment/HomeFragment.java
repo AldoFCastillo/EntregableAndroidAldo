@@ -15,7 +15,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.example.MercadoEsclavoAldo.R;
 
@@ -24,7 +23,7 @@ import com.example.MercadoEsclavoAldo.model.Producto;
 import com.example.MercadoEsclavoAldo.model.Result;
 import com.example.MercadoEsclavoAldo.utils.ResultListener;
 import com.example.MercadoEsclavoAldo.view.activity.DetailsActivity;
-import com.example.MercadoEsclavoAldo.view.activity.ItemMoveCallback;
+import com.example.MercadoEsclavoAldo.utils.ItemMoveCallback;
 import com.example.MercadoEsclavoAldo.view.adapter.ProductoAdapter;
 
 import java.util.ArrayList;

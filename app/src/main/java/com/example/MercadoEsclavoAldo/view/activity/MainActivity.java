@@ -14,6 +14,8 @@ import androidx.viewpager.widget.ViewPager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
 import com.example.MercadoEsclavoAldo.R;
 import com.example.MercadoEsclavoAldo.model.Producto;
@@ -22,6 +24,7 @@ import com.example.MercadoEsclavoAldo.view.adapter.DetailsViewPagerAdapter;
 import com.example.MercadoEsclavoAldo.view.fragment.AboutUsFragment;
 import com.example.MercadoEsclavoAldo.view.fragment.DetailsFragment;
 import com.example.MercadoEsclavoAldo.view.fragment.HomeFragment;
+import com.example.MercadoEsclavoAldo.view.fragment.LoginFragment;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -35,6 +38,7 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.noti
     private HomeFragment homeFragment = new HomeFragment();
     private AboutUsFragment aboutUSFragment = new AboutUsFragment();
     private FragmentManager fragmentManager;
+    private LoginFragment loginFragment = new LoginFragment();
 
     @BindView(R.id.contenedorDeFragmentsMain)
     CoordinatorLayout coordinatorLayout;
@@ -44,6 +48,8 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.noti
     NavigationView navigationViewHome;
     @BindView(R.id.toolbarMain)
     Toolbar toolbarMain;
+  /*  @BindView(R.id.textViewIngresarHeader)*/
+    TextView textViewIngresarHeader;
 
 
     @Override
@@ -57,6 +63,24 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.noti
 
         setNavigationView();
 
+        setToolbar();
+
+
+        View hView =  navigationViewHome.getHeaderView(0);
+        textViewIngresarHeader = hView.findViewById(R.id.textViewIngresarHeader);
+
+        textViewIngresarHeader.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setFragment(loginFragment);
+                drawerMainActivity.closeDrawers();
+            }
+        });
+
+
+    }
+
+    private void setToolbar() {
         setSupportActionBar(toolbarMain);
         ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(
                 this,
@@ -66,8 +90,6 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.noti
                 R.string.close_drawer);
         drawerMainActivity.addDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.syncState();
-
-
     }
 
     private void setNavigationView() {
