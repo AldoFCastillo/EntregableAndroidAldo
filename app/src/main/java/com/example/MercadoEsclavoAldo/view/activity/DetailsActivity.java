@@ -1,14 +1,10 @@
 package com.example.MercadoEsclavoAldo.view.activity;
 
 import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import android.content.Intent;
@@ -20,9 +16,6 @@ import com.example.MercadoEsclavoAldo.model.Producto;
 import com.example.MercadoEsclavoAldo.model.Result;
 import com.example.MercadoEsclavoAldo.view.adapter.DetailsViewPagerAdapter;
 import com.example.MercadoEsclavoAldo.view.fragment.DetailsFragment;
-import com.example.MercadoEsclavoAldo.view.fragment.HomeFragment;
-import com.google.android.material.navigation.NavigationView;
-import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,7 +61,7 @@ public class DetailsActivity extends AppCompatActivity {
         productoList = result.getResults();
         adapterPosition = bundle.getInt(KEY_POSITION);
 
-        cargarListaDeSeries(productoList);
+        cargarListaDeProductos(productoList);
         viewPagerDetails.setCurrentItem(adapterPosition);
 
         Producto producto = productoList.get(adapterPosition);
@@ -80,7 +73,7 @@ public class DetailsActivity extends AppCompatActivity {
     }
 
 
-    private void cargarListaDeSeries(List<Producto> productoList) {
+    private void cargarListaDeProductos(List<Producto> productoList) {
         for (Producto producto : productoList) {
             DetailsFragment detailsFragment = DetailsFragment.getInstance(producto);
             fragmentList.add(detailsFragment);

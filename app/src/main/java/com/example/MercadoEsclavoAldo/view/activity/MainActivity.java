@@ -1,6 +1,7 @@
 package com.example.MercadoEsclavoAldo.view.activity;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -13,9 +14,11 @@ import androidx.viewpager.widget.ViewPager;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.MercadoEsclavoAldo.R;
 import com.example.MercadoEsclavoAldo.model.Producto;
@@ -27,6 +30,7 @@ import com.example.MercadoEsclavoAldo.view.fragment.HomeFragment;
 import com.example.MercadoEsclavoAldo.view.fragment.LoginFragment;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
+
 
 import java.util.List;
 
@@ -65,7 +69,33 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.noti
 
         setToolbar();
 
+        setHeaderLogin();
 
+
+
+
+
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.toolbar_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.itemToolbarHome:
+                setFragment(homeFragment);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }}
+
+
+    private void setHeaderLogin() {
         View hView =  navigationViewHome.getHeaderView(0);
         textViewIngresarHeader = hView.findViewById(R.id.textViewIngresarHeader);
 
@@ -76,8 +106,6 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.noti
                 drawerMainActivity.closeDrawers();
             }
         });
-
-
     }
 
     private void setToolbar() {
@@ -90,6 +118,9 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.noti
                 R.string.close_drawer);
         drawerMainActivity.addDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.syncState();
+
+
+
     }
 
     private void setNavigationView() {
@@ -100,6 +131,10 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.noti
                 switch (menuItem.getItemId()) {
                     case R.id.aboutUsMenuNavigation:
                         setFragment(aboutUSFragment);
+                        break;
+
+                    case R.id.navigationViewCerrarSesionItem:
+                        loginFragment.Logout();
                         break;
                 }
                 drawerMainActivity.closeDrawers();
@@ -114,6 +149,7 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.noti
         FragmentTransaction unaTransaccion = fragmentManager.beginTransaction();
         unaTransaccion.replace(R.id.contenedorDeFragmentsMain, fragment);
         unaTransaccion.commit();
+
     }
 
 
@@ -127,4 +163,9 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.noti
         intent.putExtras(bundle);
         startActivity(intent);
     }
+
+
+
+
+
 }

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".view.fragment.LoginFragment"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context=".view.fragment.LoginFragment">
 
 
     <LinearLayout
@@ -22,21 +22,20 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="150dp"
+            android:backgroundTint="@color/colorAccent"
             android:hint="Email"
-            android:textSize="20dp"
-            android:textColorHint="@color/colorAccent"
-            android:textColor="@color/colorAccent"
-            android:backgroundTint="@color/colorAccent"/>
+            android:textColor="@color/colorTextoOscuro"
+            android:textColorHint="@color/colorTextoOscuro"
+            android:textSize="20dp" />
 
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:backgroundTint="@color/colorTextoOscuro"
+            android:textColorHint="@color/colorTextoOscuro"
             app:passwordToggleDrawable="@drawable/icon_selector"
-            app:passwordToggleEnabled="true"
-            android:textColorHint="@color/colorAccent"
-            android:backgroundTint="@color/colorAccent"
-            >
+            app:passwordToggleEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/editTextPasswordFragmentLogin"
@@ -44,12 +43,12 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="20dp"
-                android:hint="Contraseña"
                 android:backgroundTint="@color/colorAccent"
+                android:hint="Contraseña"
                 android:inputType="textPassword"
-                android:textSize="20dp"
-                android:textColorHint="@color/colorAccent"
-                android:textColor="@color/colorAccent"/>
+                android:textColor="@color/colorTextoOscuro"
+                android:textColorHint="@color/colorTextoOscuro"
+                android:textSize="20dp" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -82,7 +81,22 @@
         </LinearLayout>
 
 
+    </LinearLayout>
 
-</LinearLayout>
+
+    <com.facebook.login.widget.LoginButton
+        android:id="@+id/login_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="30dp" />
+
+    <com.google.android.gms.common.SignInButton
+        android:id="@+id/sign_in_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center" />
+
 
 </LinearLayout>
