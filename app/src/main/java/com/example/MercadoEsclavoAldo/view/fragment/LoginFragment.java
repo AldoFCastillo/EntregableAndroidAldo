@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -67,6 +68,17 @@ public class LoginFragment extends Fragment {
     LoginButton loginButton;
     @BindView(R.id.sign_in_button)
     SignInButton signInButton;
+    @BindView(R.id.editTextNombreFragmentLogin)
+    EditText editTextNombreFragmentLogin;
+    @BindView(R.id.editTextApellidoFragmentLogin)
+    EditText editTextApellidoFragmentLogin;
+    @BindView(R.id.editTextEdadFragmentLogin)
+    EditText editTextEdadFragmentLogin;
+    @BindView(R.id.buttonEnviarFragmentLogin)
+    Button buttonEnviarFragmentLogin;
+    @BindView(R.id.cardViewRegistroLogin)
+    CardView cardViewRegistroLogin;
+
 
     public LoginFragment() {
         // Required empty public constructor
@@ -81,46 +93,15 @@ public class LoginFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_login, container, false);
         ButterKnife.bind(this, view);
 
+        setButtons();
+
+
+
+        return view;
+    }
+
+    private void setButtons() {
         mAuth = FirebaseAuth.getInstance();
-
-        buttonIngresarFragmentLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Login();
-            }
-        });
-
-        buttonRegistrarFragmentLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Register();
-            }
-        });
-
-
-
-        callbackManager = CallbackManager.Factory.create();
-
-        signInButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                switch (view.getId()) {
-                    case R.id.sign_in_button:
-                        signIn();
-                        break;
-                }
-            }
-        });
-
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestEmail()
-                .requestIdToken(getString(R.string.default_web_client_id))
-                .build();
-
-        mGoogleSignInClient = GoogleSignIn.getClient(getContext(), gso);
-
-
-
 
         //TODO comment
 
@@ -142,8 +123,50 @@ public class LoginFragment extends Fragment {
                     }
                 });*/
 
+        buttonIngresarFragmentLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Login();
+            }
+        });
 
-        return view;
+        buttonRegistrarFragmentLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                cardViewRegistroLogin.setVisibility(View.VISIBLE);
+            }
+        });
+
+        buttonEnviarFragmentLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Register();
+            }
+        });
+
+
+
+//Boton Signin en Heeader del NavigationView
+
+        callbackManager = CallbackManager.Factory.create();
+
+        signInButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                switch (view.getId()) {
+                    case R.id.sign_in_button:
+                        signIn();
+                        break;
+                }
+            }
+        });
+
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .build();
+
+        mGoogleSignInClient = GoogleSignIn.getClient(getContext(), gso);
     }
 
     private void signIn() {
@@ -257,8 +280,10 @@ public class LoginFragment extends Fragment {
                         if (task.isSuccessful()) {
                             FirebaseUser user = mAuth.getCurrentUser();
                             IrAlHome(user.getEmail());
+                            Toast.makeText(getContext(), "Se registro con exito", Toast.LENGTH_SHORT).show();
+                            cardViewRegistroLogin.setVisibility(View.GONE);
                         } else {
-                            Toast.makeText(getContext(), "fallo autenticacion", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "Fallo autenticacion", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
