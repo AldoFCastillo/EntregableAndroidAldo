@@ -15,6 +15,22 @@
       },
       "oauth_client": [
         {
+          "client_id": "485325795195-2b14nk6nmcejamcto1525fris2gdg2hg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.MercadoEsclavoAldo",
+            "certificate_hash": "6fcd22f736f2f5006835f988f09f145f3ede8047"
+          }
+        },
+        {
+          "client_id": "485325795195-2ek90a5qls9vd2s2e1ck02q25qhbbue1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.MercadoEsclavoAldo",
+            "certificate_hash": "914d0eb6e7add68a0215c26cec40594c74c2546a"
+          }
+        },
+        {
           "client_id": "485325795195-qtakmoaell9jibs556919634a6104vkq.apps.googleusercontent.com",
           "client_type": 3
         }

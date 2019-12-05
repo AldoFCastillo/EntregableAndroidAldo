@@ -45,4 +45,10 @@
     <string name="fb_login_protocol_scheme" translatable="false">fb460337411500477</string>
 
 
+    //
+
+    <string name="Registrarse"><u>Registrarse</u></string>
+    <string name="Crear_cuenta"><u>Crear cuenta</u></string>
+
+
 </resources>

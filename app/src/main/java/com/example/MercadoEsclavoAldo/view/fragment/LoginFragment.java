@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.MercadoEsclavoAldo.R;
@@ -33,6 +34,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
@@ -40,6 +43,13 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -52,6 +62,8 @@ public class LoginFragment extends Fragment {
     private FirebaseAuth mAuth;
     private GoogleSignInClient mGoogleSignInClient;
     private Integer RC_SIGN_IN = 0;
+    private FirebaseFirestore db;
+    private StorageReference mStorageRef;
 
 
     @BindView(R.id.editTextEmailFragmentLogin)
@@ -61,7 +73,7 @@ public class LoginFragment extends Fragment {
     @BindView(R.id.buttonIngresarFragmentLogin)
     Button buttonIngresarFragmentLogin;
     @BindView(R.id.buttonRegistrarFragmentLogin)
-    Button buttonRegistrarFragmentLogin;
+    TextView buttonRegistrarFragmentLogin;
     @BindView(R.id.linearLayoutIniciarSesionFragmentLogin)
     LinearLayout linearLayoutIniciarSesionFragmentLogin;
     @BindView(R.id.login_button)
@@ -78,6 +90,10 @@ public class LoginFragment extends Fragment {
     Button buttonEnviarFragmentLogin;
     @BindView(R.id.cardViewRegistroLogin)
     CardView cardViewRegistroLogin;
+    @BindView(R.id.textViewLogueadoLogin)
+    TextView textViewLogueadoLogin;
+    @BindView(R.id.textViewNoLogueadoLogin)
+    TextView textViewNoLogueadoLogin;
 
 
     public LoginFragment() {
@@ -93,8 +109,10 @@ public class LoginFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_login, container, false);
         ButterKnife.bind(this, view);
 
-        setButtons();
+        mStorageRef = FirebaseStorage.getInstance().getReference();
 
+        db = FirebaseFirestore.getInstance();
+        setButtons();
 
 
         return view;
@@ -143,7 +161,6 @@ public class LoginFragment extends Fragment {
                 Register();
             }
         });
-
 
 
 //Boton Signin en Heeader del NavigationView
@@ -230,9 +247,10 @@ public class LoginFragment extends Fragment {
 
         if (currentUser != null) {
             linearLayoutIniciarSesionFragmentLogin.setVisibility(View.GONE);
+            textViewNoLogueadoLogin.setVisibility(View.GONE);
+            textViewLogueadoLogin.setVisibility(View.VISIBLE);
         }
     }
-
 
 
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
@@ -270,23 +288,56 @@ public class LoginFragment extends Fragment {
     }
 
     private void Register() {
-        String email = editTextEmailFragmentLogin.getText().toString();
+        String emailUser = editTextEmailFragmentLogin.getText().toString();
         String password = editTextPasswordFragmentLogin.getText().toString();
 
-        mAuth.createUserWithEmailAndPassword(email, password)
+        String nombre = editTextNombreFragmentLogin.getText().toString();
+        String apellido = editTextApellidoFragmentLogin.getText().toString();
+        String edad = editTextEdadFragmentLogin.getText().toString();
+
+
+        mAuth.createUserWithEmailAndPassword(emailUser, password)
                 .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             FirebaseUser user = mAuth.getCurrentUser();
-                            IrAlHome(user.getEmail());
+
+                            setPerfilFirebase(emailUser, password, nombre, apellido, edad);
+
                             Toast.makeText(getContext(), "Se registro con exito", Toast.LENGTH_SHORT).show();
+                            IrAlHome(user.getEmail());
                             cardViewRegistroLogin.setVisibility(View.GONE);
                         } else {
                             Toast.makeText(getContext(), "Fallo autenticacion", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
+    }
+
+    private void setPerfilFirebase(String emailUser, String password, String nombre, String apellido, String edad) {
+        Map<String, String> map = new HashMap<>();
+        map.put("mailUser", emailUser);
+        map.put("password", password);
+        map.put("nombre", nombre);
+        map.put("apellido", apellido);
+        map.put("edad", edad);
+
+        db.collection("usuarios").add(map).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+            @Override
+            public void onSuccess(DocumentReference documentReference) {
+                Toast.makeText(getContext(), "YEAH", Toast.LENGTH_SHORT).show();
+
+                System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAA " + documentReference.getId());
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(getContext(), "Ha ocurrido un error", Toast.LENGTH_SHORT).show();
+                String message = e.getMessage();
+                System.out.println("ha ocurrido un error: " + message);
+            }
+        });
     }
 
     private void Login() {
@@ -311,8 +362,6 @@ public class LoginFragment extends Fragment {
 
     public void Logout() {
         FirebaseAuth.getInstance().signOut();
-
-
         Toast.makeText(getContext(), "Desconexion exitosa", Toast.LENGTH_SHORT).show();
     }
 

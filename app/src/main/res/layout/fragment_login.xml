@@ -12,12 +12,48 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="LOGIN"
+            android:textSize="60sp"
+            android:layout_marginTop="30dp"
+            android:textColor="#FF3978FC"
+            android:layout_gravity="center"
+            android:fontFamily="sans-serif-black"/>
+
+        <TextView
+            android:layout_width="350dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/textViewNoLogueadoLogin"
+            android:text="Hola! Para seguir, ingresa tu e-mail o usuario"
+            android:textSize="20sp"
+            android:layout_marginTop="10dp"
+            android:textColor="@color/colorTextoOscuro"
+            android:visibility="visible"
+            android:layout_gravity="center"
+            android:fontFamily="sans-serif"/>
+
+        <TextView
+            android:layout_width="350dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/textViewLogueadoLogin"
+            android:text="Ya estas logueado!"
+            android:gravity="center"
+            android:textSize="20sp"
+            android:layout_marginTop="10dp"
+            android:textColor="@color/colorTextoOscuro"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            android:fontFamily="sans-serif"/>
+
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:padding="10dp"
-            android:layout_marginTop="150dp"
+            android:layout_marginTop="20dp"
             android:elevation="3dp"
             app:cardCornerRadius="20dp"
             app:cardUseCompatPadding="true">
@@ -27,15 +63,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:padding="10dp"
                 android:orientation="vertical"
                 android:visibility="visible">
 
                 <EditText
                     android:id="@+id/editTextEmailFragmentLogin"
-                    android:layout_width="300dp"
+                    android:layout_width="350dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:backgroundTint="@color/colorAccent"
+                    android:backgroundTint="#FF3978FC"
                     android:hint="Email"
                     android:textColor="@color/colorTextoOscuro"
                     android:textColorHint="@color/colorTextoOscuro"
@@ -52,11 +89,11 @@
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/editTextPasswordFragmentLogin"
-                        android:layout_width="300dp"
+                        android:layout_width="350dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginTop="20dp"
-                        android:backgroundTint="@color/colorAccent"
+                        android:backgroundTint="#FF3978FC"
                         android:hint="Contraseña"
                         android:inputType="textPassword"
                         android:textColor="@color/colorTextoOscuro"
@@ -66,33 +103,29 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginBottom="20dp"
-                    android:gravity="center"
-                    android:orientation="horizontal">
 
                     <Button
                         android:id="@+id/buttonIngresarFragmentLogin"
-                        android:layout_width="100dp"
+                        android:layout_width="350dp"
                         android:layout_height="wrap_content"
-                        android:background="@color/colorFondoGris"
+                        android:background="#3978FC"
+                        android:layout_marginTop="10dp"
                         android:text="Ingresar"
-                        android:textColor="@color/colorTextoOscuro" />
+                        android:layout_gravity="center"
+                        android:textColor="@color/colorTextoBlanco" />
 
-                    <Button
+                    <TextView
                         android:id="@+id/buttonRegistrarFragmentLogin"
                         android:layout_width="100dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:background="@color/colorFondoGris"
-                        android:text="Registrarse"
-                        android:textColor="@color/colorTextoOscuro" />
+                        android:gravity="center"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="20dp"
+                        android:text="@string/Registrarse"
+                        android:textColor="#FF3978FC" />
 
 
-                </LinearLayout>
+
 
 
                 <com.facebook.login.widget.LoginButton
@@ -132,12 +165,6 @@
                 android:layout_marginTop="20dp"
                 android:orientation="vertical">
 
-                <!--<ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:src="@drawable/ic_arrow_downward_black_24dp" />-->
-
 
                 <com.airbnb.lottie.LottieAnimationView
                     android:layout_width="50dp"
@@ -154,8 +181,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginTop="10dp"
-                    android:layout_marginStart="5p"
-                    android:backgroundTint="@color/colorAccent"
+                    android:layout_marginStart="5dp"
+                    android:backgroundTint="#FF3978FC"
                     android:text="Ingrese sus datos para completar el registro:"
                     android:textColor="@color/colorTextoOscuro"
                     android:textColorHint="@color/colorTextoOscuro"
@@ -167,7 +194,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginTop="20dp"
-                    android:backgroundTint="@color/colorAccent"
+                    android:backgroundTint="#FF3978FC"
                     android:hint="Nombre"
                     android:textColor="@color/colorTextoOscuro"
                     android:textColorHint="@color/colorTextoOscuro"
@@ -178,7 +205,7 @@
                     android:layout_width="300dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:backgroundTint="@color/colorAccent"
+                    android:backgroundTint="#FF3978FC"
                     android:hint="Apellido"
                     android:textColor="@color/colorTextoOscuro"
                     android:textColorHint="@color/colorTextoOscuro"
@@ -189,22 +216,22 @@
                     android:layout_width="300dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:backgroundTint="@color/colorAccent"
+                    android:backgroundTint="#FF3978FC"
                     android:hint="Edad"
                     android:textColor="@color/colorTextoOscuro"
                     android:textColorHint="@color/colorTextoOscuro"
                     android:textSize="20dp" />
 
+
                 <Button
                     android:id="@+id/buttonEnviarFragmentLogin"
-                    android:layout_width="100dp"
+                    android:layout_width="350dp"
                     android:layout_height="wrap_content"
+                    android:background="#3978FC"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/Crear_cuenta"
                     android:layout_gravity="center"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="20dp"
-                    android:background="@color/colorFondoGris"
-                    android:text="Enviar"
-                    android:textColor="@color/colorTextoOscuro" />
+                    android:textColor="@color/colorTextoBlanco" />
 
 
             </LinearLayout>

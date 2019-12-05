@@ -30,6 +30,7 @@ import com.example.MercadoEsclavoAldo.view.fragment.HomeFragment;
 import com.example.MercadoEsclavoAldo.view.fragment.LoginFragment;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.FirebaseAuth;
 
 
 import java.util.List;
@@ -134,7 +135,8 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.noti
                         break;
 
                     case R.id.navigationViewCerrarSesionItem:
-                        loginFragment.Logout();
+                        FirebaseAuth.getInstance().signOut();
+                        Toast.makeText(MainActivity.this, "Desconexion exitosa", Toast.LENGTH_SHORT).show();
                         break;
                 }
                 drawerMainActivity.closeDrawers();
