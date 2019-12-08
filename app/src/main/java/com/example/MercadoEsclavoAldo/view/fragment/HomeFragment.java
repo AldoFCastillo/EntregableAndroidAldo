@@ -26,6 +26,7 @@ import com.example.MercadoEsclavoAldo.view.activity.DetailsActivity;
 import com.example.MercadoEsclavoAldo.utils.ItemMoveCallback;
 import com.example.MercadoEsclavoAldo.view.adapter.ProductoAdapter;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,28 +73,23 @@ public class HomeFragment extends Fragment implements ProductoAdapter.ProductoAd
         ButterKnife.bind(this, view);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
         recyclerHomeFragment.setLayoutManager(layoutManager);
-        DetailsActivity detailsActivity = new DetailsActivity();
+
 
 
 
         ProductoController productoController = new ProductoController();
-        productoController.getOfertas(new ResultListener<Result>() {
-            @Override
-            public void onFinish(Result result) {
-                productoList = result.getResults();
-                ProductoAdapter productoAdapter = new ProductoAdapter(productoList, HomeFragment.this);
+        productoController.getOfertas(result -> {
+            productoList = result.getResults();
+            ProductoAdapter productoAdapter = new ProductoAdapter(productoList, HomeFragment.this);
+            ItemTouchHelper.Callback callback = new ItemMoveCallback(productoAdapter);
 
-                ItemTouchHelper.Callback callback =
-                        new ItemMoveCallback(productoAdapter);
+            ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
+            touchHelper.attachToRecyclerView(recyclerHomeFragment);
 
-                ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
-                touchHelper.attachToRecyclerView(recyclerHomeFragment);
+            recyclerHomeFragment.setAdapter(productoAdapter);
+            recyclerHomeFragment.setItemViewCacheSize(20);
+            recyclerHomeFragment.setHasFixedSize(true);
 
-                recyclerHomeFragment.setAdapter(productoAdapter);
-                recyclerHomeFragment.setItemViewCacheSize(20);
-                recyclerHomeFragment.setHasFixedSize(true);
-
-            }
         },"ofertas");
 
         /*productoController.getProductos(new ResultListener<List<Producto>>() {
@@ -106,31 +102,32 @@ public class HomeFragment extends Fragment implements ProductoAdapter.ProductoAd
             }
         });*/
 
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                laBusqueda = busqueda.getText().toString();
+        button.setOnClickListener(v -> {
+            laBusqueda = busqueda.getText().toString();
 
-        productoController.getSearchResults(new ResultListener<Result>() {
-            @Override
-            public void onFinish(Result result) {
-                productoList = result.getResults();
+    productoController.getSearchResults(result -> {
 
-                productoList = result.getResults();
-                ProductoAdapter productoAdapter = new ProductoAdapter(productoList, HomeFragment.this);
-                recyclerHomeFragment.setAdapter(productoAdapter);
-                recyclerHomeFragment.setItemViewCacheSize(20);
-                recyclerHomeFragment.setHasFixedSize(true);
 
-            }
-        }, laBusqueda);
+        productoList = result.getResults();
+        ProductoAdapter productoAdapter = new ProductoAdapter(productoList, HomeFragment.this);
+        recyclerHomeFragment.setAdapter(productoAdapter);
+        recyclerHomeFragment.setItemViewCacheSize(20);
+        recyclerHomeFragment.setHasFixedSize(true);
 
-            }
+    }, laBusqueda);
+
         });
 
 
 
         return view;
+    }
+    @Override
+    public void onResume(){
+        super.onResume();
+
+      //  recyclerHomeFragment.setAdapter(new ProductoAdapter(productoList, HomeFragment.this));
+
     }
 
     @Override

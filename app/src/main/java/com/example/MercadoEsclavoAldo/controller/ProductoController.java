@@ -37,12 +37,7 @@ public class ProductoController {
     }
 
     public void getOfertas(final ResultListener<Result> listenerDeLaView, String query) {
-        productoDAO.getOfertas(new ResultListener<Result>() {
-            @Override
-            public void onFinish(Result result) {
-                listenerDeLaView.onFinish(result);
-            }
-        }, query );
+        productoDAO.getOfertas(result -> listenerDeLaView.onFinish(result), query );
 
     }
 

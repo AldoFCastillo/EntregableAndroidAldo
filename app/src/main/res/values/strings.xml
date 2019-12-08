@@ -40,7 +40,7 @@
     <string name="open_drawer">Open Drawer</string>
     <string name="close_drawer">Close Drawer</string>
 
-//Facebook
+    //Facebook
     <string name="facebook_app_id" translatable="false">2808726849147179</string>
     <string name="fb_login_protocol_scheme" translatable="false">fb460337411500477</string>
 
@@ -49,6 +49,17 @@
 
     <string name="Registrarse"><u>Registrarse</u></string>
     <string name="Crear_cuenta"><u>Crear cuenta</u></string>
+    <string name="nombre">Nombre</string>
+    <string name="apellido">Apellido</string>
+    <string name="edad">Edad</string>
+    <string name="ingrese_sus_datos_para_completar_el_registro">Ingrese sus datos para completar el registro:</string>
+    <string name="ingresar">Ingresar</string>
+    <string name="contrase_a">Contraseña</string>
+    <string name="email">Email</string>
+    <string name="ya_estas_logueado">Ya estas logueado!</string>
+    <string name="hola_para_seguir_ingresa_tu_e_mail_o_usuario">Hola! Para seguir, ingresa tu e-mail o usuario</string>
+    <string name="login">LOGIN</string>
+    <string name="mis_datos">Mis datos</string>
 
 
 </resources>

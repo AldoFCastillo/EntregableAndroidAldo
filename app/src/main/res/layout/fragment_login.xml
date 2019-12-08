@@ -9,14 +9,14 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
 
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="LOGIN"
+            android:text="@string/login"
             android:textSize="60sp"
             android:layout_marginTop="30dp"
             android:textColor="#FF3978FC"
@@ -27,7 +27,7 @@
             android:layout_width="350dp"
             android:layout_height="wrap_content"
             android:id="@+id/textViewNoLogueadoLogin"
-            android:text="Hola! Para seguir, ingresa tu e-mail o usuario"
+            android:text="@string/hola_para_seguir_ingresa_tu_e_mail_o_usuario"
             android:textSize="20sp"
             android:layout_marginTop="10dp"
             android:textColor="@color/colorTextoOscuro"
@@ -39,7 +39,7 @@
             android:layout_width="350dp"
             android:layout_height="wrap_content"
             android:id="@+id/textViewLogueadoLogin"
-            android:text="Ya estas logueado!"
+            android:text="@string/ya_estas_logueado"
             android:gravity="center"
             android:textSize="20sp"
             android:layout_marginTop="10dp"
@@ -52,7 +52,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:padding="10dp"
+            android:padding="5dp"
             android:layout_marginTop="20dp"
             android:elevation="3dp"
             app:cardCornerRadius="20dp"
@@ -63,7 +63,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:padding="10dp"
                 android:orientation="vertical"
                 android:visibility="visible">
 
@@ -73,10 +72,10 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:backgroundTint="#FF3978FC"
-                    android:hint="Email"
+                    android:hint="@string/email"
                     android:textColor="@color/colorTextoOscuro"
                     android:textColorHint="@color/colorTextoOscuro"
-                    android:textSize="20dp" />
+                    android:textSize="20sp" />
 
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -94,11 +93,11 @@
                         android:layout_gravity="center"
                         android:layout_marginTop="20dp"
                         android:backgroundTint="#FF3978FC"
-                        android:hint="Contraseña"
+                        android:hint="@string/contrase_a"
                         android:inputType="textPassword"
                         android:textColor="@color/colorTextoOscuro"
                         android:textColorHint="@color/colorTextoOscuro"
-                        android:textSize="20dp" />
+                        android:textSize="20sp" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -110,7 +109,7 @@
                         android:layout_height="wrap_content"
                         android:background="#3978FC"
                         android:layout_marginTop="10dp"
-                        android:text="Ingresar"
+                        android:text="@string/ingresar"
                         android:layout_gravity="center"
                         android:textColor="@color/colorTextoBlanco" />
 
@@ -118,6 +117,7 @@
                         android:id="@+id/buttonRegistrarFragmentLogin"
                         android:layout_width="100dp"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
                         android:gravity="center"
                         android:layout_gravity="center"
                         android:layout_marginTop="20dp"
@@ -183,10 +183,10 @@
                     android:layout_marginTop="10dp"
                     android:layout_marginStart="5dp"
                     android:backgroundTint="#FF3978FC"
-                    android:text="Ingrese sus datos para completar el registro:"
+                    android:text="@string/ingrese_sus_datos_para_completar_el_registro"
                     android:textColor="@color/colorTextoOscuro"
                     android:textColorHint="@color/colorTextoOscuro"
-                    android:textSize="20dp" />
+                    android:textSize="20sp" />
 
                 <EditText
                     android:id="@+id/editTextNombreFragmentLogin"
@@ -195,10 +195,10 @@
                     android:layout_gravity="center"
                     android:layout_marginTop="20dp"
                     android:backgroundTint="#FF3978FC"
-                    android:hint="Nombre"
+                    android:hint="@string/nombre"
                     android:textColor="@color/colorTextoOscuro"
                     android:textColorHint="@color/colorTextoOscuro"
-                    android:textSize="20dp" />
+                    android:textSize="20sp" />
 
                 <EditText
                     android:id="@+id/editTextApellidoFragmentLogin"
@@ -206,10 +206,10 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:backgroundTint="#FF3978FC"
-                    android:hint="Apellido"
+                    android:hint="@string/apellido"
                     android:textColor="@color/colorTextoOscuro"
                     android:textColorHint="@color/colorTextoOscuro"
-                    android:textSize="20dp" />
+                    android:textSize="20sp" />
 
                 <EditText
                     android:id="@+id/editTextEdadFragmentLogin"
@@ -217,10 +217,11 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:backgroundTint="#FF3978FC"
-                    android:hint="Edad"
+                    android:inputType="number"
+                    android:hint="@string/edad"
                     android:textColor="@color/colorTextoOscuro"
                     android:textColorHint="@color/colorTextoOscuro"
-                    android:textSize="20dp" />
+                    android:textSize="20sp" />
 
 
                 <Button

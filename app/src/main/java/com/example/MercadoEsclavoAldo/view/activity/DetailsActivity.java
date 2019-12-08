@@ -17,6 +17,7 @@ import com.example.MercadoEsclavoAldo.model.Result;
 import com.example.MercadoEsclavoAldo.view.adapter.DetailsViewPagerAdapter;
 import com.example.MercadoEsclavoAldo.view.fragment.DetailsFragment;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,7 +65,7 @@ public class DetailsActivity extends AppCompatActivity {
         cargarListaDeProductos(productoList);
         viewPagerDetails.setCurrentItem(adapterPosition);
 
-        Producto producto = productoList.get(adapterPosition);
+        Producto producto = (Producto) productoList.get(adapterPosition);
         bundle.putSerializable(DetailsFragment.KEY_PRODUCTO, producto);
 
 
@@ -74,7 +75,8 @@ public class DetailsActivity extends AppCompatActivity {
 
 
     private void cargarListaDeProductos(List<Producto> productoList) {
-        for (Producto producto : productoList) {
+        for (Object object : productoList) {
+            Producto producto = (Producto) object;
             DetailsFragment detailsFragment = DetailsFragment.getInstance(producto);
             fragmentList.add(detailsFragment);
         }

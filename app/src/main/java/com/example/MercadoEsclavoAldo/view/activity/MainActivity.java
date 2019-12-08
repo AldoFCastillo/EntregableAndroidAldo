@@ -1,7 +1,5 @@
 package com.example.MercadoEsclavoAldo.view.activity;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -10,7 +8,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.viewpager.widget.ViewPager;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -23,16 +20,16 @@ import android.widget.Toast;
 import com.example.MercadoEsclavoAldo.R;
 import com.example.MercadoEsclavoAldo.model.Producto;
 import com.example.MercadoEsclavoAldo.model.Result;
-import com.example.MercadoEsclavoAldo.view.adapter.DetailsViewPagerAdapter;
 import com.example.MercadoEsclavoAldo.view.fragment.AboutUsFragment;
-import com.example.MercadoEsclavoAldo.view.fragment.DetailsFragment;
 import com.example.MercadoEsclavoAldo.view.fragment.HomeFragment;
 import com.example.MercadoEsclavoAldo.view.fragment.LoginFragment;
+import com.example.MercadoEsclavoAldo.view.fragment.ProfileFragment;
 import com.google.android.material.navigation.NavigationView;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 
+import java.io.Serializable;
 import java.util.List;
 
 import butterknife.BindView;
@@ -42,8 +39,12 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.noti
 
     private HomeFragment homeFragment = new HomeFragment();
     private AboutUsFragment aboutUSFragment = new AboutUsFragment();
+    private ProfileFragment profileFragment = new ProfileFragment();
     private FragmentManager fragmentManager;
     private LoginFragment loginFragment = new LoginFragment();
+    private String name = "Tu Nombre";
+    private Boolean logOk = false;
+    private FirebaseAuth mAuth;
 
     @BindView(R.id.contenedorDeFragmentsMain)
     CoordinatorLayout coordinatorLayout;
@@ -53,8 +54,12 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.noti
     NavigationView navigationViewHome;
     @BindView(R.id.toolbarMain)
     Toolbar toolbarMain;
-  /*  @BindView(R.id.textViewIngresarHeader)*/
+
+    TextView textViewBienvenidaHeaderLog;
+    TextView textViewBienvenidaHeaderLogNombre;
     TextView textViewIngresarHeader;
+    TextView textViewBienvenidaHeaderNavigation;
+    TextView textViewTextHeaderNavigation;
 
 
     @Override
@@ -70,11 +75,7 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.noti
 
         setToolbar();
 
-        setHeaderLogin();
-
-
-
-
+        setHeaderLogin(logOk);
 
 
     }
@@ -93,19 +94,40 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.noti
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
-        }}
+        }
+    }
 
 
-    private void setHeaderLogin() {
-        View hView =  navigationViewHome.getHeaderView(0);
+    private void setHeaderLogin(Boolean loginOk) {
+        View hView = navigationViewHome.getHeaderView(0);
         textViewIngresarHeader = hView.findViewById(R.id.textViewIngresarHeader);
+        textViewBienvenidaHeaderLogNombre = hView.findViewById(R.id.textViewBienvenidaHeaderLogNombre);
+        textViewBienvenidaHeaderLog = hView.findViewById(R.id.textViewBienvenidaHeaderLog);
+        textViewBienvenidaHeaderNavigation = hView.findViewById(R.id.textViewBienvenidaHeaderNavigation);
+        textViewTextHeaderNavigation = hView.findViewById(R.id.textViewTextHeaderNavigation);
 
-        textViewIngresarHeader.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setFragment(loginFragment);
-                drawerMainActivity.closeDrawers();
-            }
+        if (loginOk) {
+            textViewIngresarHeader.setVisibility(View.GONE);
+            textViewTextHeaderNavigation.setVisibility(View.GONE);
+            textViewBienvenidaHeaderNavigation.setVisibility(View.GONE);
+            textViewBienvenidaHeaderLog.setVisibility(View.VISIBLE);
+            textViewBienvenidaHeaderLogNombre.setText(name);
+            textViewBienvenidaHeaderLogNombre.setVisibility(View.VISIBLE);
+
+
+        } else {
+            textViewIngresarHeader.setVisibility(View.VISIBLE);
+            textViewTextHeaderNavigation.setVisibility(View.VISIBLE);
+            textViewBienvenidaHeaderNavigation.setVisibility(View.VISIBLE);
+            textViewBienvenidaHeaderLog.setVisibility(View.GONE);
+            textViewBienvenidaHeaderLogNombre.setText(name);
+            textViewBienvenidaHeaderLogNombre.setVisibility(View.GONE);
+        }
+
+        textViewIngresarHeader.setOnClickListener(v -> {
+
+            setFragment(loginFragment);
+            drawerMainActivity.closeDrawers();
         });
     }
 
@@ -121,28 +143,32 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.noti
         actionBarDrawerToggle.syncState();
 
 
-
     }
 
     private void setNavigationView() {
-        navigationViewHome.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+        navigationViewHome.setNavigationItemSelectedListener(menuItem -> {
 
-                switch (menuItem.getItemId()) {
-                    case R.id.aboutUsMenuNavigation:
-                        setFragment(aboutUSFragment);
-                        break;
+            switch (menuItem.getItemId()) {
+                case R.id.aboutUsMenuNavigation:
+                    setFragment(aboutUSFragment);
+                    break;
 
-                    case R.id.navigationViewCerrarSesionItem:
-                        FirebaseAuth.getInstance().signOut();
-                        Toast.makeText(MainActivity.this, "Desconexion exitosa", Toast.LENGTH_SHORT).show();
-                        break;
-                }
-                drawerMainActivity.closeDrawers();
-                return false;
+                case R.id.navigationViewCerrarSesionItem:
+                    FirebaseAuth.getInstance().signOut();
+                    logOk = false;
+                    setFragment(homeFragment);
+                    Toast.makeText(MainActivity.this, "Desconexion exitosa", Toast.LENGTH_SHORT).show();
+                    setHeaderLogin(logOk);
+                    break;
+
+                case R.id.navigationViewPerfil:
+                    setFragment(profileFragment);
+                    break;
             }
 
+
+            drawerMainActivity.closeDrawers();
+            return false;
         });
     }
 
@@ -154,6 +180,13 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.noti
 
     }
 
+    public Boolean getLogOk() {
+        return logOk;
+    }
+
+    public void setLogOk(Boolean logOk) {
+        this.logOk = logOk;
+    }
 
     @Override
     public void enviarNotificacion(Integer adapterPosition, List<Producto> productoList) {
@@ -166,7 +199,26 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.noti
         startActivity(intent);
     }
 
+    public String getName() {
+        return name;
+    }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        mAuth = FirebaseAuth.getInstance();
+
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+
+        if (currentUser != null) {
+            //String name = currentUser.getDisplayName();
+            textViewBienvenidaHeaderLogNombre.setText("Nombre");
+            logOk = true;
+            setHeaderLogin(logOk);
+            loginFragment.setmAuth(mAuth);
+        }
+    }
 
 
 

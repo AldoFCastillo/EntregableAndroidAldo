@@ -3,10 +3,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="150dp"
+    android:layout_height="wrap_content"
     android:background="@color/colorFondoAmarillo"
     android:orientation="vertical"
     tools:ignore="PrivateResource,Overdraw">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:visibility="visible"
+        android:id="@+id/linearHeaderLogout">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -24,6 +32,35 @@
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textViewBienvenidaHeaderLog"
+            android:layout_width="280dp"
+            android:layout_height="wrap_content"
+            android:paddingStart="10dp"
+            android:text="Hola "
+            android:textColor="@color/colorTextoOscuro"
+            android:textSize="20sp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@+id/textViewTextHeaderNavigation"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toEndOf="@id/imageViewHeaderNavigation"
+            app:layout_constraintTop_toTopOf="@id/imageViewHeaderNavigation" />
+
+        <TextView
+            android:id="@+id/textViewBienvenidaHeaderLogNombre"
+            android:layout_width="280dp"
+            android:layout_height="wrap_content"
+            android:paddingStart="10dp"
+            android:textColor="@color/colorTextoOscuro"
+            android:textSize="20sp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@+id/textViewTextHeaderNavigation"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toEndOf="@id/textViewBienvenidaHeaderLog"
+            app:layout_constraintTop_toTopOf="@id/imageViewHeaderNavigation" />
 
         <TextView
             android:id="@+id/textViewBienvenidaHeaderNavigation"
@@ -61,11 +98,16 @@
         android:layout_width="300dp"
         android:layout_height="40dp"
         android:layout_gravity="center"
+        android:layout_marginBottom="10dp"
         android:layout_marginTop="10dp"
         android:background="#4664E4"
         android:gravity="center"
         android:text="Ingresar"
         android:textColor="@color/colorTextoBlanco"
         android:textSize="16sp" />
+
+    </LinearLayout>
+
+
 
 </LinearLayout>

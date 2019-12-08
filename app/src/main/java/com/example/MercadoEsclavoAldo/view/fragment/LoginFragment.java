@@ -1,10 +1,10 @@
 package com.example.MercadoEsclavoAldo.view.fragment;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
@@ -16,16 +16,18 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ListAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.MercadoEsclavoAldo.R;
+import com.example.MercadoEsclavoAldo.controller.ProductoController;
+import com.example.MercadoEsclavoAldo.model.ProductoDetalles;
+import com.example.MercadoEsclavoAldo.model.User;
 import com.example.MercadoEsclavoAldo.view.activity.MainActivity;
+import com.example.MercadoEsclavoAldo.view.adapter.ProductoAdapter;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
-import com.facebook.FacebookCallback;
-import com.facebook.FacebookException;
-import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -33,12 +35,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -48,7 +46,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
@@ -64,6 +64,10 @@ public class LoginFragment extends Fragment {
     private Integer RC_SIGN_IN = 0;
     private FirebaseFirestore db;
     private StorageReference mStorageRef;
+    private String userId;
+    private List<String> favList = new ArrayList<>();
+    private favListener favListener;
+    private Integer i = 0;
 
 
     @BindView(R.id.editTextEmailFragmentLogin)
@@ -100,7 +104,9 @@ public class LoginFragment extends Fragment {
         // Required empty public constructor
     }
 
+
     CallbackManager callbackManager;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -111,6 +117,9 @@ public class LoginFragment extends Fragment {
 
         mStorageRef = FirebaseStorage.getInstance().getReference();
 
+        mAuth = FirebaseAuth.getInstance();
+
+
         db = FirebaseFirestore.getInstance();
         setButtons();
 
@@ -118,63 +127,41 @@ public class LoginFragment extends Fragment {
         return view;
     }
 
+    public List<String> getFavList() {
+        return favList;
+    }
+
+    public void setFavList(List<String> favList) {
+        this.favList = favList;
+    }
+
     private void setButtons() {
         mAuth = FirebaseAuth.getInstance();
 
-        //TODO comment
 
-        /*LoginManager.getInstance().registerCallback(callbackManager,
-                new FacebookCallback<LoginResult>() {
-                    @Override
-                    public void onSuccess(LoginResult loginResult) {
-                        handleFacebookAccessToken(loginResult.getAccessToken());
-                    }
+        buttonIngresarFragmentLogin.setOnClickListener(view -> {
 
-                    @Override
-                    public void onCancel() {
-                        // App code
-                    }
-
-                    @Override
-                    public void onError(FacebookException exception) {
-                        // App code
-                    }
-                });*/
-
-        buttonIngresarFragmentLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Login();
-            }
+            //
+            Login();
         });
 
-        buttonRegistrarFragmentLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                cardViewRegistroLogin.setVisibility(View.VISIBLE);
-            }
+        buttonRegistrarFragmentLogin.setOnClickListener(view -> {
+            cardViewRegistroLogin.setVisibility(View.VISIBLE);
+            editTextNombreFragmentLogin.requestFocus();
         });
 
-        buttonEnviarFragmentLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Register();
-            }
-        });
+        buttonEnviarFragmentLogin.setOnClickListener(v -> registerUser());
 
 
-//Boton Signin en Heeader del NavigationView
+//Boton Signin en Header del NavigationView
 
         callbackManager = CallbackManager.Factory.create();
 
-        signInButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                switch (view.getId()) {
-                    case R.id.sign_in_button:
-                        signIn();
-                        break;
-                }
+        signInButton.setOnClickListener(view -> {
+            switch (view.getId()) {
+                case R.id.sign_in_button:
+                    signIn();
+                    break;
             }
         });
 
@@ -212,17 +199,14 @@ public class LoginFragment extends Fragment {
     private void handleFacebookAccessToken(AccessToken token) {
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
         mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            IrAlHome(user.getEmail());
+                .addOnCompleteListener(getActivity(), task -> {
+                    if (task.isSuccessful()) {
+                        FirebaseUser user = mAuth.getCurrentUser();
+                        IrAlHome(user.getEmail());
 
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Toast.makeText(getContext(), "fallo autenticacion", Toast.LENGTH_SHORT).show();
-                        }
+                    } else {
+                        // If sign in fails, display a message to the user.
+                        Toast.makeText(getContext(), "fallo autenticacion", Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -239,41 +223,24 @@ public class LoginFragment extends Fragment {
     }
 
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-
-        if (currentUser != null) {
-            linearLayoutIniciarSesionFragmentLogin.setVisibility(View.GONE);
-            textViewNoLogueadoLogin.setVisibility(View.GONE);
-            textViewLogueadoLogin.setVisibility(View.VISIBLE);
-        }
-    }
-
-
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
 
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
 
         mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
+                .addOnCompleteListener(getActivity(), task -> {
+                    if (task.isSuccessful()) {
+                        // Sign in success, update UI with the signed-in user's information
 
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            Intent intent = new Intent(getContext(), MainActivity.class);
-                            startActivity(intent);
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Toast.makeText(getContext(), "Authentication Failed.", Toast.LENGTH_SHORT).show();
-
-                        }
+                        FirebaseUser user = mAuth.getCurrentUser();
+                        Intent intent = new Intent(getContext(), MainActivity.class);
+                        startActivity(intent);
+                    } else {
+                        // If sign in fails, display a message to the user.
+                        Toast.makeText(getContext(), "Authentication Failed.", Toast.LENGTH_SHORT).show();
 
                     }
+
                 });
     }
 
@@ -287,7 +254,7 @@ public class LoginFragment extends Fragment {
         startActivity(intent);
     }
 
-    private void Register() {
+    private void registerUser() {
         String emailUser = editTextEmailFragmentLogin.getText().toString();
         String password = editTextPasswordFragmentLogin.getText().toString();
 
@@ -297,47 +264,51 @@ public class LoginFragment extends Fragment {
 
 
         mAuth.createUserWithEmailAndPassword(emailUser, password)
-                .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            FirebaseUser user = mAuth.getCurrentUser();
+                .addOnCompleteListener(getActivity(), task -> {
+                    if (task.isSuccessful()) {
+                        FirebaseUser user = mAuth.getCurrentUser();
+                        userId = user.getUid();
+                        setPerfilFirebase(emailUser, password, nombre, apellido, edad);
 
-                            setPerfilFirebase(emailUser, password, nombre, apellido, edad);
-
-                            Toast.makeText(getContext(), "Se registro con exito", Toast.LENGTH_SHORT).show();
-                            IrAlHome(user.getEmail());
-                            cardViewRegistroLogin.setVisibility(View.GONE);
-                        } else {
-                            Toast.makeText(getContext(), "Fallo autenticacion", Toast.LENGTH_SHORT).show();
-                        }
+                        Toast.makeText(getContext(), "Se registró con exito", Toast.LENGTH_SHORT).show();
+                        // String name = user.getDisplayName();
+                        IrAlHome(user.getEmail());
+                        cardViewRegistroLogin.setVisibility(View.GONE);
+                    } else {
+                        Toast.makeText(getContext(), "Falló el registro!", Toast.LENGTH_SHORT).show();
                     }
                 });
     }
 
     private void setPerfilFirebase(String emailUser, String password, String nombre, String apellido, String edad) {
-        Map<String, String> map = new HashMap<>();
-        map.put("mailUser", emailUser);
-        map.put("password", password);
-        map.put("nombre", nombre);
-        map.put("apellido", apellido);
-        map.put("edad", edad);
 
-        db.collection("usuarios").add(map).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-            @Override
-            public void onSuccess(DocumentReference documentReference) {
-                Toast.makeText(getContext(), "YEAH", Toast.LENGTH_SHORT).show();
+        User user = new User();
+        user.setNombre(nombre);
+        user.setApellido(apellido);
+        user.setEdad(edad);
+        user.setPassword(password);
+        user.setMail(emailUser);
 
-                System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAA " + documentReference.getId());
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(getContext(), "Ha ocurrido un error", Toast.LENGTH_SHORT).show();
-                String message = e.getMessage();
-                System.out.println("ha ocurrido un error: " + message);
-            }
-        });
+        db.collection("usuarios").document(userId).set(user).addOnSuccessListener(aVoid ->
+                System.out.println("EXITO"));
+    }
+
+
+    /*public logListener getLogListener() {
+        return logListener;
+    }
+
+    public void setLogListener(logListener logListener) {
+        this.logListener = logListener;
+    }*/
+
+
+    public FirebaseAuth getmAuth() {
+        return mAuth;
+    }
+
+    public void setmAuth(FirebaseAuth mAuth) {
+        this.mAuth = mAuth;
     }
 
     private void Login() {
@@ -345,24 +316,87 @@ public class LoginFragment extends Fragment {
         String password = editTextPasswordFragmentLogin.getText().toString();
 
         mAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            IrAlHome(user.getEmail());
-                        } else {
-                            Toast.makeText(getContext(), "fallo ingreso", Toast.LENGTH_SHORT).show();
-                        }
-
-                        // ...
+                .addOnCompleteListener(getActivity(), task -> {
+                    if (task.isSuccessful()) {
+                        FirebaseUser user = mAuth.getCurrentUser();
+                        userId = user.getUid();
+                        //String name = user.getDisplayName();
+                        Toast.makeText(getContext(), "Exito!", Toast.LENGTH_SHORT).show();
+                        IrAlHome(user.getEmail());
+                    } else {
+                        Toast.makeText(getContext(), "fallo ingreso", Toast.LENGTH_SHORT).show();
                     }
+
+                    // ...
                 });
     }
 
-    public void Logout() {
+    public Boolean addToFavs(String id, Context context) {
+        Boolean ok = false;
+        Map<String, List> favMap = new HashMap<>();
+
+        db = FirebaseFirestore.getInstance();
+
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        userId = currentUser.getUid();
+
+        if (currentUser != null) {
+            /*textViewNoLogueadoLogin.setVisibility(View.GONE);
+            textViewLogueadoLogin.setVisibility(View.VISIBLE);
+            linearLayoutIniciarSesionFragmentLogin.setVisibility(View.GONE);*/
+            favList.add(id);
+            favMap.put("favoritos", favList);
+            ok = true;
+            db.collection("usuarios").document(userId).set(favMap).addOnSuccessListener(aVoid ->
+                    Toast.makeText(context, "Agregado a Favoritos!", Toast.LENGTH_SHORT).show());
+
+        } else Toast.makeText(context, "Primero debes loguearte!", Toast.LENGTH_SHORT).show();
+
+        return ok;
+
+    }
+
+    public List<ProductoDetalles> searchFavs(favListener favListener){
+        this.favListener = favListener;
+        mAuth = FirebaseAuth.getInstance();
+        i=0;
+
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        String id = currentUser.getUid();
+        ProductoController productoController = new ProductoController();
+        List<ProductoDetalles> productoList= new ArrayList<>();
+
+        db = FirebaseFirestore.getInstance();
+
+        DocumentReference docRef = db.collection("usuarios").document(id);
+        docRef.get().addOnSuccessListener(documentSnapshot -> {
+            User user = documentSnapshot.toObject(User.class);
+           // String asd = user.getNombre();
+            favList = user.getFavoritos();
+
+            for (String anId : favList) {
+
+                productoController.getProducto(result -> {
+                    i++;
+                    productoList.add(result);
+                    if (i.equals(favList.size())){
+                        favListener.sendState(productoList);
+                    }
+                }, anId);
+            }
+        });
+
+
+        return productoList;
+    }
+
+    /*public void Logout(Context context) {
         FirebaseAuth.getInstance().signOut();
-        Toast.makeText(getContext(), "Desconexion exitosa", Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, "Desconexion exitosa", Toast.LENGTH_SHORT).show();
+    }*/
+
+    public interface favListener {
+        public void sendState(List<ProductoDetalles> productoDetalles);//, String name);
     }
 
 
