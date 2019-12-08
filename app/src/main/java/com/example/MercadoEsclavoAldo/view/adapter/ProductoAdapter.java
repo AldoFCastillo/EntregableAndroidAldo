@@ -14,12 +14,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.example.MercadoEsclavoAldo.R;
+import com.example.MercadoEsclavoAldo.controller.ProductoController;
 import com.example.MercadoEsclavoAldo.model.Producto;
 import com.example.MercadoEsclavoAldo.model.ProductoDetalles;
+import com.example.MercadoEsclavoAldo.model.User;
 import com.example.MercadoEsclavoAldo.utils.ItemMoveCallback;
 import com.example.MercadoEsclavoAldo.view.fragment.LoginFragment;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -34,6 +38,7 @@ public class ProductoAdapter extends RecyclerView.Adapter implements ItemMoveCal
     private List<Producto> productoList = new ArrayList<>();
     private List<ProductoDetalles> productoDetallesList = new ArrayList<>();
     private ProductoAdapterListener productoAdapterListener;
+    private FirebaseFirestore db;
     private LoginFragment loginFragment = new LoginFragment();
 
     public ProductoAdapter(List<Producto> productoList, ProductoAdapterListener productoAdapterListener) {//, LoginFragment loginFragment) {
@@ -57,9 +62,9 @@ public class ProductoAdapter extends RecyclerView.Adapter implements ItemMoveCal
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
 
-            Producto producto = productoList.get(position);
-            ProductoViewHolder productoViewHolder = (ProductoViewHolder) holder;
-            productoViewHolder.bind(producto);
+        Producto producto = productoList.get(position);
+        ProductoViewHolder productoViewHolder = (ProductoViewHolder) holder;
+        productoViewHolder.bind(producto);
 
 
     }
@@ -67,7 +72,7 @@ public class ProductoAdapter extends RecyclerView.Adapter implements ItemMoveCal
     @Override
     public int getItemCount() {
 
-            return productoList.size();
+        return productoList.size();
 
     }
 
@@ -130,7 +135,7 @@ public class ProductoAdapter extends RecyclerView.Adapter implements ItemMoveCal
 
             imageViewUnlikeCelda.setOnClickListener(v -> {
 
-                if (addToFavs()) {
+                if (addToFavs(itemView)) {
                     imageViewUnlikeCelda.setVisibility(View.GONE);
                     lottieLikeCelda.setVisibility(View.VISIBLE);
                     lottieLikeCelda.playAnimation();
@@ -139,15 +144,34 @@ public class ProductoAdapter extends RecyclerView.Adapter implements ItemMoveCal
             });
 
             lottieLikeCelda.setOnClickListener(v -> {
+                if (removeFav(itemView)){
 
-                /*imageViewUnlikeCelda.setVisibility(View.VISIBLE);
-                lottieLikeCelda.setVisibility(View.GONE);*/
+                imageViewUnlikeCelda.setVisibility(View.VISIBLE);
+                lottieLikeCelda.setVisibility(View.GONE);}
 
 
             });
         }
 
-        private Boolean addToFavs() {
+        private Boolean removeFav(@NonNull View itemView) {
+            Boolean ok = false;
+            mAuth = FirebaseAuth.getInstance();
+            String id;
+
+            FirebaseUser currentUser = mAuth.getCurrentUser();
+
+            if (currentUser != null) {
+                loginFragment.setmAuth(mAuth);
+                id = (productoList.get(getAdapterPosition())).getId();
+                loginFragment.removeFromFavs(id, itemView.getContext());
+                ok = true;
+            } else
+                Toast.makeText(itemView.getContext(), "Primero debes loguearte!", Toast.LENGTH_SHORT).show();
+
+            return ok;
+        }
+
+        private Boolean addToFavs(@NonNull View itemView) {
 
             Boolean ok = false;
             mAuth = FirebaseAuth.getInstance();
@@ -157,44 +181,60 @@ public class ProductoAdapter extends RecyclerView.Adapter implements ItemMoveCal
 
             if (currentUser != null) {
                 loginFragment.setmAuth(mAuth);
-                id = productoList.get(getAdapterPosition()).getId();
-                ok = (loginFragment.addToFavs(id, itemView.getContext()));
-            }else
-                Toast.makeText(itemView.getContext(), "Debes estar logueado/a primero", Toast.LENGTH_SHORT).show();
+                id = (productoList.get(getAdapterPosition())).getId();
+                loginFragment.addToFavs(id, itemView.getContext());
+                ok = true;
+            } else
+                Toast.makeText(itemView.getContext(), "Primero debes loguearte!", Toast.LENGTH_SHORT).show();
             return ok;
 
         }
 
 
+
+
         public void bind(Producto producto) {
 
-                textViewDescripcionCelda.setText(producto.getTitle());
-                String precio = "$ " + producto.getPrice();
-                textViewPrecioCelda.setText(precio);
+            mAuth = FirebaseAuth.getInstance();
+            FirebaseUser currentUser = mAuth.getCurrentUser();
 
-                String url = producto.getThumbnail();
-                String https = "https";
-                url = url.substring(4);
-                url = https + url;
-                Glide.with(itemView).load(url).into(imageViewCelda);
-                List<String> listaDeFavs = loginFragment.getFavList();
-                for (String anId : listaDeFavs){
-                    if (anId.equals(producto.getId())){
-                        imageViewUnlikeCelda.setVisibility(View.GONE);
-                        lottieLikeCelda.setVisibility(View.VISIBLE);
-                        lottieLikeCelda.playAnimation();
-                        break;
+            textViewDescripcionCelda.setText(producto.getTitle());
+            String precio = "$ " + producto.getPrice();
+            textViewPrecioCelda.setText(precio);
+            String url = producto.getThumbnail();
+            String https = "https";
+            url = url.substring(4);
+            url = https + url;
+            Glide.with(itemView).load(url).into(imageViewCelda);
+
+            if (currentUser != null) {
+
+                String id = currentUser.getUid();
+                db = FirebaseFirestore.getInstance();
+                DocumentReference docRef = db.collection("usuarios").document(id);
+                docRef.get().addOnSuccessListener(documentSnapshot -> {
+                    User user = documentSnapshot.toObject(User.class);
+                    List<String> listaDeFavs = user.getFavoritos();
+
+                    for (String anId : listaDeFavs) {
+                        if (anId.equals(producto.getId())) {
+                            imageViewUnlikeCelda.setVisibility(View.GONE);
+                            lottieLikeCelda.setVisibility(View.VISIBLE);
+                            lottieLikeCelda.playAnimation();
+                            break;
+                        }
                     }
-                }
 
+                });
+            }
         }
     }
 
-    public interface ProductoAdapterListener {
-        public void informarSeleccion(Integer adapterPosition);
-    }
+        public interface ProductoAdapterListener {
+            public void informarSeleccion(Integer adapterPosition);
+        }
 
-    public interface FavsListener {
-        public void informarSeleccion();
+        public interface FavsListener {
+            public void informarSeleccion();
+        }
     }
-}

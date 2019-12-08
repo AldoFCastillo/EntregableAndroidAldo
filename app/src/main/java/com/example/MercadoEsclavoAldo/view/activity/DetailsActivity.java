@@ -58,14 +58,12 @@ public class DetailsActivity extends AppCompatActivity {
         Bundle bundle = intent.getExtras();
 
         Result result = (Result) bundle.getSerializable(KEY_PRODUCTOS);
-
         productoList = result.getResults();
         adapterPosition = bundle.getInt(KEY_POSITION);
-
         cargarListaDeProductos(productoList);
         viewPagerDetails.setCurrentItem(adapterPosition);
 
-        Producto producto = (Producto) productoList.get(adapterPosition);
+        Producto producto = productoList.get(adapterPosition);
         bundle.putSerializable(DetailsFragment.KEY_PRODUCTO, producto);
 
 

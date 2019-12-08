@@ -146,6 +146,10 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.noti
     }
 
     private void setNavigationView() {
+
+        mAuth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+
         navigationViewHome.setNavigationItemSelectedListener(menuItem -> {
 
             switch (menuItem.getItemId()) {
@@ -154,15 +158,32 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.noti
                     break;
 
                 case R.id.navigationViewCerrarSesionItem:
-                    FirebaseAuth.getInstance().signOut();
-                    logOk = false;
-                    setFragment(homeFragment);
-                    Toast.makeText(MainActivity.this, "Desconexion exitosa", Toast.LENGTH_SHORT).show();
-                    setHeaderLogin(logOk);
+                    if (currentUser != null) {
+                        FirebaseAuth.getInstance().signOut();
+                        logOk = false;
+                        setFragment(homeFragment);
+                        Toast.makeText(MainActivity.this, "Desconexion exitosa", Toast.LENGTH_SHORT).show();
+                        setHeaderLogin(logOk);
+                    } else
+                        Toast.makeText(MainActivity.this, "Debes loguearte primero!", Toast.LENGTH_SHORT).show();
                     break;
 
                 case R.id.navigationViewPerfil:
-                    setFragment(profileFragment);
+
+                    if (currentUser != null) {
+                        profileFragment.getLinearMisDatosProfile().setVisibility(View.VISIBLE);
+                        setFragment(profileFragment);
+                    } else
+                        Toast.makeText(MainActivity.this, "Debes loguearte primero!", Toast.LENGTH_SHORT).show();
+                    break;
+
+                case R.id.navigationViewFavoritosItem:
+
+                    if (currentUser != null) {
+                        profileFragment.getLinearMisDatosProfile().setVisibility(View.GONE);
+                        setFragment(profileFragment);
+                    } else
+                        Toast.makeText(MainActivity.this, "Debes loguearte primero!", Toast.LENGTH_SHORT).show();
                     break;
             }
 
@@ -219,7 +240,6 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.noti
             loginFragment.setmAuth(mAuth);
         }
     }
-
 
 
 }

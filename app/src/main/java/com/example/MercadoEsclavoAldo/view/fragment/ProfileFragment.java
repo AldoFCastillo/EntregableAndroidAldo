@@ -12,6 +12,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.example.MercadoEsclavoAldo.R;
 import com.example.MercadoEsclavoAldo.controller.ProductoController;
@@ -51,6 +53,16 @@ public class ProfileFragment extends Fragment implements ProductDetailsAdapter.P
 
     @BindView(R.id.recyclerProfile)
     RecyclerView recyclerProfile;
+    @BindView(R.id.textViewNombreProfile)
+    TextView textViewNombreProfile;
+    @BindView(R.id.textViewApellidoProfile)
+    TextView textViewApellidoProfile;
+    @BindView(R.id.textViewEdadProfile)
+    TextView textViewEdadProfile;
+    @BindView(R.id.textViewMailProfile)
+    TextView textViewMailProfile;
+    @BindView(R.id.linearMisDatosProfile)
+    LinearLayout linearMisDatosProfile;
 
 
     public ProfileFragment() {
@@ -65,13 +77,26 @@ public class ProfileFragment extends Fragment implements ProductDetailsAdapter.P
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
         ButterKnife.bind(this, view);
-        ProductoController productoController = new ProductoController();
+
+        setTextsAndFavs();
+
+
+        return view;
+    }
+
+    public LinearLayout getLinearMisDatosProfile() {
+        return linearMisDatosProfile;
+    }
+
+    public void setLinearMisDatosProfile(LinearLayout linearMisDatosProfile) {
+        this.linearMisDatosProfile = linearMisDatosProfile;
+    }
+
+    private void setTextsAndFavs() {
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
         String id = currentUser.getUid();
-
         db = FirebaseFirestore.getInstance();
-
         DocumentReference docRef = db.collection("usuarios").document(id);
         docRef.get().addOnSuccessListener(documentSnapshot -> {
             User user = documentSnapshot.toObject(User.class);
@@ -79,21 +104,14 @@ public class ProfileFragment extends Fragment implements ProductDetailsAdapter.P
             idList = user.getFavoritos();
             loginFragment.searchFavs(ProfileFragment.this);
 
+            textViewMailProfile.setText(user.getMail());
+            textViewEdadProfile.setText(user.getEdad());
+            textViewApellidoProfile.setText(user.getApellido());
+            textViewNombreProfile.setText(user.getNombre());
 
         });
-
-
-        return view;
     }
 
-    private void searchFavs(ProductoController productoController, ResultListener resultListener) {
-        for (String anId : idList) {
-            productoController.getProducto(result -> {
-                favoritosList.add(result);
-            }, anId);
-        }
-        resultListener.onFinish(favoritosList);
-    }
 
     @Override
     public void informarSeleccion(Integer adapterPosition) {

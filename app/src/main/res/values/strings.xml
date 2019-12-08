@@ -57,9 +57,11 @@
     <string name="contrase_a">Contraseña</string>
     <string name="email">Email</string>
     <string name="ya_estas_logueado">Ya estas logueado!</string>
-    <string name="hola_para_seguir_ingresa_tu_e_mail_o_usuario">Hola! Para seguir, ingresa tu e-mail o usuario</string>
+    <string name="hola_para_seguir_ingresa_tu_e_mail_o_usuario">Hola! Para seguir, ingresa tu e-mail y contraseña</string>
     <string name="login">LOGIN</string>
     <string name="mis_datos">Mis datos</string>
+    <string name="escribe_un_comentario_sobre_este_producto">Escribe un comentario sobre este producto</string>
+    <string name="comentario_pregunta"><u>Queres dejar un comentario?</u></string>
 
 
 </resources>

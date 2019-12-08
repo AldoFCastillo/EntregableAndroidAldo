@@ -3,6 +3,7 @@ package com.example.MercadoEsclavoAldo.model;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Producto implements Serializable {
@@ -10,6 +11,9 @@ public class Producto implements Serializable {
     private String precio;
     private Integer imagen;
     private String descripcion;
+
+    private List<Comment> commentList = new ArrayList<>();
+
 
     @SerializedName("id")
     private String id;
@@ -70,6 +74,14 @@ public class Producto implements Serializable {
         this.precio = precio;
         this.imagen = imagen;
         this.descripcion = descripcion;
+    }
+
+    public List<Comment> getCommentList() {
+        return commentList;
+    }
+
+    public void setCommentList(List<Comment> commentList) {
+        this.commentList = commentList;
     }
 
     public String getTitulo() {
