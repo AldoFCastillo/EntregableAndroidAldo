@@ -45,6 +45,7 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.noti
     private String name = "Tu Nombre";
     private Boolean logOk = false;
     private FirebaseAuth mAuth;
+    private FirebaseUser currentUser;
 
     @BindView(R.id.contenedorDeFragmentsMain)
     CoordinatorLayout coordinatorLayout;
@@ -148,7 +149,7 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.noti
     private void setNavigationView() {
 
         mAuth = FirebaseAuth.getInstance();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
+        currentUser = mAuth.getCurrentUser();
 
         navigationViewHome.setNavigationItemSelectedListener(menuItem -> {
 
@@ -158,6 +159,8 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.noti
                     break;
 
                 case R.id.navigationViewCerrarSesionItem:
+                    mAuth = FirebaseAuth.getInstance();
+                    currentUser = mAuth.getCurrentUser();
                     if (currentUser != null) {
                         FirebaseAuth.getInstance().signOut();
                         logOk = false;
