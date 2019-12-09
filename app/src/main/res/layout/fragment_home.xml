@@ -8,20 +8,22 @@
     android:orientation="vertical"
     tools:context="com.example.MercadoEsclavoAldo.view.fragment.HomeFragment">
 
-    <EditText
-        android:id="@+id/busqueda"
+    <TextView
         android:layout_width="match_parent"
-        android:layout_height="40dp" />
-
-    <Button
-        android:id="@+id/button"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="buscar" />
+        android:id="@+id/textViewTituloBusquedaFragmentHome"
+        android:layout_marginTop="10dp"
+        android:textAllCaps="true"
+        android:textSize="24sp"
+        android:gravity="center"
+        android:text="ofertas"
+        android:fontFamily="sans-serif"
+        android:textColor="@color/colorTextoOscuro"/>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_marginTop="10dp">
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefreshLayout"

@@ -192,11 +192,22 @@
                     android:textSize="20sp" />
 
                 <EditText
-                    android:id="@+id/editTextNombreFragmentLogin"
+                    android:id="@+id/editTextUserNameFragmentLogin"
                     android:layout_width="300dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginTop="20dp"
+                    android:backgroundTint="#FF3978FC"
+                    android:hint="Nombre de usuario"
+                    android:textColor="@color/colorTextoOscuro"
+                    android:textColorHint="@color/colorTextoOscuro"
+                    android:textSize="20sp" />
+
+                <EditText
+                    android:id="@+id/editTextNombreFragmentLogin"
+                    android:layout_width="300dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:backgroundTint="#FF3978FC"
                     android:hint="@string/nombre"
                     android:textColor="@color/colorTextoOscuro"

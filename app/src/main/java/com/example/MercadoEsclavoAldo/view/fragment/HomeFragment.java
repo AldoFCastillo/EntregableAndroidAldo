@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.example.MercadoEsclavoAldo.R;
 
@@ -42,20 +43,15 @@ public class HomeFragment extends Fragment implements ProductoAdapter.ProductoAd
 
     @BindView(R.id.recyclerHomeFragment)
     RecyclerView recyclerHomeFragment;
-    @BindView(R.id.busqueda)
-    EditText busqueda;
-    @BindView(R.id.button)
-    Button button;
+    @BindView(R.id.textViewTituloBusquedaFragmentHome)
+    TextView textViewTituloBusquedaFragmentHome;
     @BindView(R.id.swipeRefreshLayout)
     SwipeRefreshLayout swipeRefreshLayout;
 
     private List<Producto> productoList = new ArrayList<>();
-    private String laBusqueda;
-
 
 
     private notificador notificadorFragment;
-
 
 
     public HomeFragment() {
@@ -77,77 +73,57 @@ public class HomeFragment extends Fragment implements ProductoAdapter.ProductoAd
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
         recyclerHomeFragment.setLayoutManager(layoutManager);
 
-
-
-
-
-
-        ProductoController productoController = new ProductoController();
-        setRecycler(productoController);
-        refresh(productoController);
-
-        /*productoController.getProductos(new ResultListener<List<Producto>>() {
-            @Override
-            public void onFinish(List<Producto> result) {
-                productoList = result;
-                ProductoAdapter productoAdapter = new ProductoAdapter(result, HomeFragment.this);
-                recyclerHomeFragment.setAdapter(productoAdapter);
-                recyclerHomeFragment.setHasFixedSize(true);
-            }
-        });*/
-
-        setSearch(productoController);
-
+        setOfertas();
+        refresh();
 
         return view;
     }
 
-    private void setRecycler(ProductoController productoController) {
-        productoController.getOfertas(result -> {
-            productoList = result.getResults();
-            ProductoAdapter productoAdapter = new ProductoAdapter(productoList, HomeFragment.this);
-            ItemTouchHelper.Callback callback = new ItemMoveCallback(productoAdapter);
 
-            ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
-            touchHelper.attachToRecyclerView(recyclerHomeFragment);
+    public void setOfertas() {
+        setSearch("ofertas");
 
-            recyclerHomeFragment.setAdapter(productoAdapter);
-            swipeRefreshLayout.setRefreshing(false);
-            recyclerHomeFragment.setItemViewCacheSize(20);
-            recyclerHomeFragment.setHasFixedSize(true);
-
-        },"ofertas");
     }
 
+    private void setRecycler(List<Producto> productoList) {
 
-    public void refresh(ProductoController productoController) {
-        swipeRefreshLayout.setOnRefreshListener(() -> {
-            productoList.clear();
-            setRecycler(productoController);
-        });
-    }
-
-    private void setSearch(ProductoController productoController) {
-        button.setOnClickListener(v -> {
-            laBusqueda = busqueda.getText().toString();
-
-    productoController.getSearchResults(result -> {
-
-
-        productoList = result.getResults();
         ProductoAdapter productoAdapter = new ProductoAdapter(productoList, HomeFragment.this);
+        ItemTouchHelper.Callback callback = new ItemMoveCallback(productoAdapter);
+
+        ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
+        touchHelper.attachToRecyclerView(recyclerHomeFragment);
+
         recyclerHomeFragment.setAdapter(productoAdapter);
         swipeRefreshLayout.setRefreshing(false);
         recyclerHomeFragment.setItemViewCacheSize(20);
         recyclerHomeFragment.setHasFixedSize(true);
 
-    }, laBusqueda);
+    }
+
+
+    public void refresh() {
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            productoList.clear();
+            setOfertas();
 
         });
     }
 
+    public void setSearch(String query) {
+
+        ProductoController productoController = new ProductoController();
+        productoController.getSearchResults(result -> {
+
+            productoList = result.getResults();
+            setRecycler(productoList);
+            textViewTituloBusquedaFragmentHome.setText(query);
+
+        }, query);
+
+    }
+
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
         recyclerHomeFragment.setAdapter(new ProductoAdapter(productoList, HomeFragment.this));
 
