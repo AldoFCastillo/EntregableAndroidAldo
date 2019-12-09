@@ -68,7 +68,6 @@ public class LoginFragment extends Fragment {
     private List<String> favList = new ArrayList<>();
     private favListener favListener;
     private Integer i = 0;
-    private Map<String, List> favMap = new HashMap<>();
 
 
     @BindView(R.id.editTextEmailFragmentLogin)
@@ -348,15 +347,26 @@ public class LoginFragment extends Fragment {
         FirebaseUser currentUser = mAuth.getCurrentUser();
         userId = currentUser.getUid();
 
-            /*textViewNoLogueadoLogin.setVisibility(View.GONE);
-            textViewLogueadoLogin.setVisibility(View.VISIBLE);
-            linearLayoutIniciarSesionFragmentLogin.setVisibility(View.GONE);*/
 
         favList.add(id);
-        favMap.put("favoritos", favList);
-        db.collection("usuarios").document(userId).set(favMap).addOnSuccessListener(aVoid -> {
-            Toast.makeText(context, "Agregado a Favoritos!", Toast.LENGTH_SHORT).show();
+
+
+        db = FirebaseFirestore.getInstance();
+        DocumentReference docRef = db.collection("usuarios").document(userId);
+        docRef.get().addOnSuccessListener(documentSnapshot -> {
+            User user = documentSnapshot.toObject(User.class);
+            FirebaseUser aCurrentUser = mAuth.getCurrentUser();
+            aCurrentUser = mAuth.getCurrentUser();
+            String uId = aCurrentUser.getUid();
+            favList = user.getFavoritos();
+            favList.add(id);
+            user.setFavoritos(favList);
+            db.collection("usuarios").document(userId).set(user).addOnSuccessListener(aVoid -> {
+                Toast.makeText(context, "Agregado a Favoritos!", Toast.LENGTH_SHORT).show();
+            });
+
         });
+
 
     }
 
@@ -366,17 +376,24 @@ public class LoginFragment extends Fragment {
         FirebaseUser currentUser = mAuth.getCurrentUser();
         userId = currentUser.getUid();
 
-        for (String anId : altFavList) {
-            if (anId.equals(id)) {
-                favList.remove(id);
-                favMap.remove("favoritos");
-                favMap.put("favoritos", favList);
-                db.collection("usuarios").document(userId).set(favMap).addOnSuccessListener(aVoid -> {
-                    Toast.makeText(context, "Eliminado de favoritos", Toast.LENGTH_SHORT).show();
-                });
-
+        DocumentReference docRef = db.collection("usuarios").document(userId);
+        docRef.get().addOnSuccessListener(documentSnapshot -> {
+            User user = documentSnapshot.toObject(User.class);
+            FirebaseUser aCurrentUser = mAuth.getCurrentUser();
+            aCurrentUser = mAuth.getCurrentUser();
+            String uId = aCurrentUser.getUid();
+            favList = user.getFavoritos();
+            for (String anId : altFavList) {
+                if (anId.equals(id)) {
+                    favList.remove(id);
+                    user.setFavoritos(favList);
+                    db.collection("usuarios").document(userId).set(user).addOnSuccessListener(aVoid -> {
+                        Toast.makeText(context, "Eliminado de Favoritos!", Toast.LENGTH_SHORT).show();
+                    });
+                    break;
+                }
             }
-        }
+        });
     }
 
 

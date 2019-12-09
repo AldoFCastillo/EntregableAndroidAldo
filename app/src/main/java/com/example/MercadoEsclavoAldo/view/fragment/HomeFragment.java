@@ -125,8 +125,7 @@ public class HomeFragment extends Fragment implements ProductoAdapter.ProductoAd
     @Override
     public void onResume(){
         super.onResume();
-
-      //  recyclerHomeFragment.setAdapter(new ProductoAdapter(productoList, HomeFragment.this));
+        recyclerHomeFragment.setAdapter(new ProductoAdapter(productoList, HomeFragment.this));
 
     }
 

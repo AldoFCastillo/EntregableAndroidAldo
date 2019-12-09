@@ -161,7 +161,6 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.noti
                     if (currentUser != null) {
                         FirebaseAuth.getInstance().signOut();
                         logOk = false;
-                        setFragment(homeFragment);
                         Toast.makeText(MainActivity.this, "Desconexion exitosa", Toast.LENGTH_SHORT).show();
                         setHeaderLogin(logOk);
                     } else
@@ -171,7 +170,7 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.noti
                 case R.id.navigationViewPerfil:
 
                     if (currentUser != null) {
-                        profileFragment.getLinearMisDatosProfile().setVisibility(View.VISIBLE);
+                       // profileFragment.getLinearMisDatosProfile().setVisibility(View.VISIBLE);
                         setFragment(profileFragment);
                     } else
                         Toast.makeText(MainActivity.this, "Debes loguearte primero!", Toast.LENGTH_SHORT).show();
@@ -180,8 +179,8 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.noti
                 case R.id.navigationViewFavoritosItem:
 
                     if (currentUser != null) {
-                        profileFragment.getLinearMisDatosProfile().setVisibility(View.GONE);
                         setFragment(profileFragment);
+          //              profileFragment.getLinearMisDatosProfile().setVisibility(View.GONE);
                     } else
                         Toast.makeText(MainActivity.this, "Debes loguearte primero!", Toast.LENGTH_SHORT).show();
                     break;
