@@ -371,7 +371,7 @@ public class LoginFragment extends Fragment {
     }
 
     public void removeFromFavs(String id, Context context) {
-        List<String> altFavList = favList;
+     //   List<String> altFavList = favList;
         db = FirebaseFirestore.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
         userId = currentUser.getUid();
@@ -383,6 +383,7 @@ public class LoginFragment extends Fragment {
             aCurrentUser = mAuth.getCurrentUser();
             String uId = aCurrentUser.getUid();
             favList = user.getFavoritos();
+            List<String> altFavList = favList;
             for (String anId : altFavList) {
                 if (anId.equals(id)) {
                     favList.remove(id);
