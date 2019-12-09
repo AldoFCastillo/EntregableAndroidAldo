@@ -67,14 +67,14 @@ public class ProductoDetalles implements Serializable {
     private Shipping shipping;*/
     @SerializedName("international_delivery_mode")
     private String internationalDeliveryMode;
+    @SerializedName("geolocation")
+    private Geolocation geolocation;
     /* @SerializedName("seller_address")
      private SellerAddress sellerAddress;
      @SerializedName("seller_contact")
      private Object sellerContact;
      @SerializedName("location")
      private Location location;
-     @SerializedName("geolocation")
-     private Geolocation geolocation;
      @SerializedName("coverage_areas")
      private List<Object> coverageAreas = null;
      @SerializedName("attributes")
@@ -115,6 +115,14 @@ public class ProductoDetalles implements Serializable {
     private Boolean catalogListing;
 
     public ProductoDetalles() {
+    }
+
+    public Geolocation getGeolocation() {
+        return geolocation;
+    }
+
+    public void setGeolocation(Geolocation geolocation) {
+        this.geolocation = geolocation;
     }
 
     public String getId() {

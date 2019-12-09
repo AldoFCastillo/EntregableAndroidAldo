@@ -3,7 +3,6 @@ package com.example.MercadoEsclavoAldo.view.fragment;
 
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -21,16 +20,10 @@ import com.bumptech.glide.Glide;
 import com.example.MercadoEsclavoAldo.R;
 import com.example.MercadoEsclavoAldo.controller.ProductoController;
 import com.example.MercadoEsclavoAldo.model.Comment;
-import com.example.MercadoEsclavoAldo.model.Description;
 import com.example.MercadoEsclavoAldo.model.Producto;
-import com.example.MercadoEsclavoAldo.model.ProductoDetalles;
-import com.example.MercadoEsclavoAldo.model.Result;
-import com.example.MercadoEsclavoAldo.model.User;
-import com.example.MercadoEsclavoAldo.utils.ResultListener;
 import com.example.MercadoEsclavoAldo.view.adapter.CommentsAdapter;
-import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -54,6 +47,7 @@ public class DetailsFragment extends Fragment {
     private String id;
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
+    private locationListener locationListener;
 
     @BindView(R.id.imageViewDetails)
     ImageView imageViewDetails;
@@ -71,6 +65,8 @@ public class DetailsFragment extends Fragment {
     RecyclerView recyclerComentarios;
     @BindView(R.id.textViewPreguntaComentarios)
     TextView textViewPreguntaComentarios;
+    @BindView(R.id.buttonMap)
+    FloatingActionButton buttonMap;
 
 
     public DetailsFragment() {
@@ -114,26 +110,32 @@ public class DetailsFragment extends Fragment {
         });
 
 
-
         buttonEnviarComentarios.setOnClickListener(v -> {
             Comment comment = new Comment();
             comment.setComment(editTextComentarios.getText().toString());
             commentsList.add(comment);
             Producto aProduct = new Producto();
             aProduct.setCommentList(commentsList);
-            db.collection("productos").document(id).set(aProduct).addOnSuccessListener(aVoid ->{
-                    Toast.makeText(getContext(), "Se guardo tu comentario!", Toast.LENGTH_SHORT).show();
-                    editTextComentarios.setText("");
-                    recyclerComentarios.setAdapter(commentsAdapter);
+            db.collection("productos").document(id).set(aProduct).addOnSuccessListener(aVoid -> {
+                Toast.makeText(getContext(), "Se guardo tu comentario!", Toast.LENGTH_SHORT).show();
+                editTextComentarios.setText("");
+                recyclerComentarios.setAdapter(commentsAdapter);
 
             }).addOnFailureListener(e ->
                     Toast.makeText(getContext(), "Error!", Toast.LENGTH_SHORT).show());
         });
 
 
-
-
         return view;
+    }
+
+
+    public locationListener getLocationListener() {
+        return locationListener;
+    }
+
+    public void setLocationListener(locationListener locationListener) {
+        this.locationListener = locationListener;
     }
 
     private void setRecyclerComments() {
@@ -141,14 +143,15 @@ public class DetailsFragment extends Fragment {
         DocumentReference docRef = db.collection("productos").document(id);
         docRef.get().addOnSuccessListener(documentSnapshot -> {
             Producto producto1 = documentSnapshot.toObject(Producto.class);
-            if(producto1!=null){
-            commentsList = producto1.getCommentList();
-            commentsAdapter = new CommentsAdapter(commentsList);
-            RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
-            recyclerComentarios.setLayoutManager(layoutManager);
-            recyclerComentarios.setAdapter(commentsAdapter);
-            recyclerComentarios.setItemViewCacheSize(20);
-            recyclerComentarios.setHasFixedSize(true);}
+            if (producto1 != null) {
+                commentsList = producto1.getCommentList();
+                commentsAdapter = new CommentsAdapter(commentsList);
+                RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
+                recyclerComentarios.setLayoutManager(layoutManager);
+                recyclerComentarios.setAdapter(commentsAdapter);
+                recyclerComentarios.setItemViewCacheSize(20);
+                recyclerComentarios.setHasFixedSize(true);
+            }
 
         });
     }
@@ -165,6 +168,15 @@ public class DetailsFragment extends Fragment {
             String idDescripcion = result.getId();
             productoController.getDescripcion(result1 -> textViewDescripcionDetails.setText(result1.getPlainText()), idDescripcion);
 
+            buttonMap.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Double lat = result.getGeolocation().getLatitude();
+                    Double lon =result.getGeolocation().getLongitude();
+                    locationListener.sendLocation(lat, lon);
+                }
+            });
+
         }, id);
     }
 
@@ -173,4 +185,10 @@ public class DetailsFragment extends Fragment {
         super.onResume();
         setRecyclerComments();
     }
+
+
+    public interface locationListener {
+        public void sendLocation(Double lat, Double lon);
+    }
+
 }

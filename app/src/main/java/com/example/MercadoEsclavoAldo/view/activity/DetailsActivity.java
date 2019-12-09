@@ -24,7 +24,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class DetailsActivity extends AppCompatActivity {
+public class DetailsActivity extends AppCompatActivity implements DetailsFragment.locationListener{
 
     private DetailsViewPagerAdapter detailsViewPagerAdapter;
     private FragmentManager fragmentManager;
@@ -76,6 +76,7 @@ public class DetailsActivity extends AppCompatActivity {
         for (Object object : productoList) {
             Producto producto = (Producto) object;
             DetailsFragment detailsFragment = DetailsFragment.getInstance(producto);
+            detailsFragment.setLocationListener(DetailsActivity.this);
             fragmentList.add(detailsFragment);
         }
         detailsViewPagerAdapter = new DetailsViewPagerAdapter(getSupportFragmentManager(), fragmentList);
@@ -83,4 +84,13 @@ public class DetailsActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public void sendLocation(Double lat, Double lon) {
+        Intent intent = new Intent(DetailsActivity.this, MapActivity.class);
+        Bundle mapBundle = new Bundle();
+        mapBundle.putDouble(MapActivity.LATITUDE, lat);
+        mapBundle.putDouble(MapActivity.LONGITUDE, lon);
+        intent.putExtras(mapBundle);
+        startActivity(intent);
+    }
 }
