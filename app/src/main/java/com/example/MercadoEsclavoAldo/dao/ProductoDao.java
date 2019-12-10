@@ -58,33 +58,9 @@ public class ProductoDao {
     }
 
 
-    public void getSearchResults(final ResultListener<Result> resultListener, String query) {
+    public void getSearchResults(final ResultListener<Result> resultListener, String query, Integer limit, Integer offset) {
 
-        Call<Result> call = mercadoService.getBusqueda(query);
-
-        call.enqueue(new Callback<Result>() {
-            @Override
-            public void onResponse(Call<Result> call, Response<Result> response) {
-                Result searchResult = response.body();
-
-                resultListener.onFinish(searchResult);
-
-            }
-
-            @Override
-            public void onFailure(Call<Result> call, Throwable t) {
-                String message = t.getMessage();
-                System.out.println("ha ocurrido un error" + message);
-                t.printStackTrace();
-
-            }
-        });
-
-    }
-
-    public void getOfertas(final ResultListener<Result> resultListener, String query) {
-
-        Call<Result> call = mercadoService.getOfertas(query);
+        Call<Result> call = mercadoService.getBusqueda(limit, offset, query);
 
         call.enqueue(new Callback<Result>() {
             @Override
@@ -105,6 +81,7 @@ public class ProductoDao {
         });
 
     }
+
 
     public void getProducto(final ResultListener<ProductoDetalles> resultListener, String path) {
 

@@ -11,6 +11,9 @@ import java.util.List;
 
 public class ProductoController {
 
+    public static final Integer PAGE_SIZE = 10;
+    private Integer offset = 0;
+
     private ProductoDao productoDAO;
 
     public ProductoController() {
@@ -18,46 +21,26 @@ public class ProductoController {
     }
 
     public void getProductos(final ResultListener<List<Producto>> listenerDeLaView) {
-        productoDAO.getProductos(new ResultListener<List<Producto>>() {
-            @Override
-            public void onFinish(List<Producto> result) {
-                listenerDeLaView.onFinish(result);
-            }
-        });
+        productoDAO.getProductos((ResultListener<List<Producto>>) result -> listenerDeLaView.onFinish(result));
     }
 
     public void getSearchResults(final ResultListener<Result> listenerDeLaView, String query) {
-        productoDAO.getSearchResults(new ResultListener<Result>() {
-            @Override
-            public void onFinish(Result result) {
-                listenerDeLaView.onFinish(result);
-            }
-        }, query );
+        productoDAO.getSearchResults(result ->{ listenerDeLaView.onFinish(result);
+        offset=offset + PAGE_SIZE;
+
+        }, query, PAGE_SIZE, offset);
 
     }
 
-    public void getOfertas(final ResultListener<Result> listenerDeLaView, String query) {
-        productoDAO.getOfertas(result -> listenerDeLaView.onFinish(result), query );
 
-    }
 
     public void getProducto(final ResultListener<ProductoDetalles> listenerDeLaView, String path) {
-        productoDAO.getProducto(new ResultListener<ProductoDetalles>() {
-            @Override
-            public void onFinish(ProductoDetalles result) {
-                listenerDeLaView.onFinish(result);
-            }
-        }, path);
+        productoDAO.getProducto(result -> listenerDeLaView.onFinish(result), path);
 
     }
 
     public void getDescripcion(final ResultListener<Description> listenerDeLaView, String path) {
-        productoDAO.getDescripcion(new ResultListener<Description>() {
-            @Override
-            public void onFinish(Description result) {
-                listenerDeLaView.onFinish(result);
-            }
-        }, path);
+        productoDAO.getDescripcion(result -> listenerDeLaView.onFinish(result), path);
 
     }
 }

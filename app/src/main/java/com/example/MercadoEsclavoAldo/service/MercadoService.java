@@ -11,11 +11,9 @@ import retrofit2.http.Query;
 
 public interface MercadoService {
 
-    @GET("/sites/MLA/search")
-    Call<Result> getOfertas( @Query("q") String key);
 
-    @GET("/sites/MLA/search")
-    Call<Result> getBusqueda(@Query("q") String key);
+    @GET("/sites/MLA/search &/paging?&offset={offset}&limit={limit}")
+    Call<Result> getBusqueda(@Path("limit")Integer limit, @Path("offset") Integer offset, @Query("q") String key);
 
     @GET ("/items/{path}")
     Call<ProductoDetalles> getProducto(@Path("path") String path);

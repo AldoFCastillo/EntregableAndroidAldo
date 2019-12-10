@@ -203,13 +203,7 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.noti
 
     }
 
-    public Boolean getLogOk() {
-        return logOk;
-    }
 
-    public void setLogOk(Boolean logOk) {
-        this.logOk = logOk;
-    }
 
     @Override
     public void enviarNotificacion(Integer adapterPosition, List<Producto> productoList) {

@@ -103,7 +103,7 @@ public class HomeFragment extends Fragment implements ProductoAdapter.ProductoAd
     }
 
     private void setRecycler(ProductoController productoController) {
-        productoController.getOfertas(result -> {
+        productoController.getSearchResults(result -> {
             productoList = result.getResults();
             ProductoAdapter productoAdapter = new ProductoAdapter(productoList, HomeFragment.this);
             ItemTouchHelper.Callback callback = new ItemMoveCallback(productoAdapter);
