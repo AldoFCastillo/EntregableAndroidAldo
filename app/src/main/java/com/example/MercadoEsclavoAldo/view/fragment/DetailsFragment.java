@@ -4,6 +4,8 @@ package com.example.MercadoEsclavoAldo.view.fragment;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -13,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,9 +24,11 @@ import com.example.MercadoEsclavoAldo.R;
 import com.example.MercadoEsclavoAldo.controller.ProductoController;
 import com.example.MercadoEsclavoAldo.model.Comment;
 import com.example.MercadoEsclavoAldo.model.Producto;
+import com.example.MercadoEsclavoAldo.model.User;
 import com.example.MercadoEsclavoAldo.view.adapter.CommentsAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -67,6 +72,8 @@ public class DetailsFragment extends Fragment {
     TextView textViewPreguntaComentarios;
     @BindView(R.id.buttonMap)
     FloatingActionButton buttonMap;
+    @BindView(R.id.fragments)
+    LinearLayout fragments;
 
 
     public DetailsFragment() {
@@ -102,37 +109,84 @@ public class DetailsFragment extends Fragment {
         setRecyclerComments();
 
 
-        textViewPreguntaComentarios.setOnClickListener(v -> {
-            textViewPreguntaComentarios.setVisibility(View.GONE);
-            editTextComentarios.setVisibility(View.VISIBLE);
-            buttonEnviarComentarios.setVisibility(View.VISIBLE);
-            editTextComentarios.requestFocus();
-        });
+        setQuestionComments();
 
 
-        buttonEnviarComentarios.setOnClickListener(v -> {
-            Comment comment = new Comment();
-            comment.setComment(editTextComentarios.getText().toString());
-            commentsList.add(comment);
-            Producto aProduct = new Producto();
-            aProduct.setCommentList(commentsList);
-            db.collection("productos").document(id).set(aProduct).addOnSuccessListener(aVoid -> {
-                Toast.makeText(getContext(), "Se guardo tu comentario!", Toast.LENGTH_SHORT).show();
-                editTextComentarios.setText("");
-                recyclerComentarios.setAdapter(commentsAdapter);
+        setEnviarButton();
 
-            }).addOnFailureListener(e ->
-                    Toast.makeText(getContext(), "Error!", Toast.LENGTH_SHORT).show());
-        });
+
+        /*AboutUsFragment aboutUsFragment = new AboutUsFragment();
+
+        setFragment(aboutUsFragment);*/
 
 
         return view;
     }
 
 
-    public locationListener getLocationListener() {
-        return locationListener;
+    private void setFragment(Fragment fragment) {
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction unaTransaccion = fragmentManager.beginTransaction();
+        unaTransaccion.replace(R.id.fragments, fragment);
+        unaTransaccion.commit();
+
     }
+
+    private void setQuestionComments() {
+        textViewPreguntaComentarios.setOnClickListener(v -> {
+            textViewPreguntaComentarios.setVisibility(View.GONE);
+            editTextComentarios.setVisibility(View.VISIBLE);
+            buttonEnviarComentarios.setVisibility(View.VISIBLE);
+            editTextComentarios.requestFocus();
+        });
+    }
+
+    private void setEnviarButton() {
+        buttonEnviarComentarios.setOnClickListener(v -> {
+            mAuth = FirebaseAuth.getInstance();
+            FirebaseUser currentUser = mAuth.getCurrentUser();
+            if (currentUser != null) {
+                if (editTextComentarios.equals("")) {
+                    Toast.makeText(getContext(), "Debes escribir un comentario", Toast.LENGTH_SHORT).show();
+                } else {
+                    Comment comment = new Comment();
+                    comment.setComment(editTextComentarios.getText().toString());
+                    getUserName(comment);
+                    commentsList.add(comment);
+                    Producto aProduct = new Producto();
+                    aProduct.setCommentList(commentsList);
+                    db.collection("productos").document(id).set(aProduct).addOnSuccessListener(aVoid -> {
+                        Toast.makeText(getContext(), "Se guardo tu comentario!", Toast.LENGTH_SHORT).show();
+                        editTextComentarios.setText("");
+                        recyclerComentarios.setAdapter(commentsAdapter);
+
+                    }).addOnFailureListener(e ->
+                            Toast.makeText(getContext(), "Error!", Toast.LENGTH_SHORT).show());
+
+                }
+
+            }else Toast.makeText(getContext(), "Debes loguearte primero!", Toast.LENGTH_SHORT).show();
+        });
+
+
+
+    }
+
+    public void getUserName(Comment comment){
+
+        mAuth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        String id = currentUser.getUid();
+        db = FirebaseFirestore.getInstance();
+        DocumentReference docRef = db.collection("usuarios").document(id);
+        docRef.get().addOnSuccessListener(documentSnapshot -> {
+            User user = documentSnapshot.toObject(User.class);
+            String userN = user.getUserName();
+            comment.setUsername(user.getUserName());
+        });
+
+    }
+
 
     public void setLocationListener(locationListener locationListener) {
         this.locationListener = locationListener;
@@ -168,13 +222,10 @@ public class DetailsFragment extends Fragment {
             String idDescripcion = result.getId();
             productoController.getDescripcion(result1 -> textViewDescripcionDetails.setText(result1.getPlainText()), idDescripcion);
 
-            buttonMap.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Double lat = result.getGeolocation().getLatitude();
-                    Double lon =result.getGeolocation().getLongitude();
-                    locationListener.sendLocation(lat, lon);
-                }
+            buttonMap.setOnClickListener(v -> {
+                Double lat = result.getGeolocation().getLatitude();
+                Double lon = result.getGeolocation().getLongitude();
+                locationListener.sendLocation(lat, lon);
             });
 
         }, id);

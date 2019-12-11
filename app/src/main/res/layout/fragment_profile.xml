@@ -202,15 +202,6 @@
 
         </LinearLayout>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:background="@color/colorFondoGris"
-            android:fontFamily="sans-serif"
-            android:padding="10dp"
-            android:text="Mis Favoritos"
-            android:textColor="@color/colorTextoOscuro"
-            android:textSize="20sp" />
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
@@ -220,10 +211,15 @@
             app:cardUseCompatPadding="true">
 
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerProfile"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="400dp" />
+                android:layout_height="400dp"
+                android:orientation="vertical"
+                android:id="@+id/linearContendeorFavprotpsProfile">
+
+
+
+            </LinearLayout>
 
 
         </androidx.cardview.widget.CardView>

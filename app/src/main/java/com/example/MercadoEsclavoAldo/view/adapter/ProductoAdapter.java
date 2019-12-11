@@ -14,9 +14,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.example.MercadoEsclavoAldo.R;
-import com.example.MercadoEsclavoAldo.controller.ProductoController;
+
 import com.example.MercadoEsclavoAldo.model.Producto;
-import com.example.MercadoEsclavoAldo.model.ProductoDetalles;
+
 import com.example.MercadoEsclavoAldo.model.User;
 import com.example.MercadoEsclavoAldo.utils.ItemMoveCallback;
 import com.example.MercadoEsclavoAldo.view.fragment.LoginFragment;
@@ -25,8 +25,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -35,14 +33,12 @@ import butterknife.ButterKnife;
 
 public class ProductoAdapter extends RecyclerView.Adapter implements ItemMoveCallback.ItemTouchHelperContract {
 
-    private List<Producto> productoList = new ArrayList<>();
-    private List<ProductoDetalles> productoDetallesList = new ArrayList<>();
+    private List<Producto> productoList;
     private ProductoAdapterListener productoAdapterListener;
     private FirebaseFirestore db;
     private LoginFragment loginFragment = new LoginFragment();
 
-    public ProductoAdapter(List<Producto> productoList, ProductoAdapterListener productoAdapterListener) {//, LoginFragment loginFragment) {
-
+    public ProductoAdapter(List<Producto> productoList, ProductoAdapterListener productoAdapterListener) {
 
         this.productoList = productoList;
         this.productoAdapterListener = productoAdapterListener;
@@ -118,7 +114,7 @@ public class ProductoAdapter extends RecyclerView.Adapter implements ItemMoveCal
 
 
         View rowView;
-        private List<String> favoritosId = new ArrayList<>();
+
 
 
         public ProductoViewHolder(@NonNull View itemView) {
@@ -195,9 +191,6 @@ public class ProductoAdapter extends RecyclerView.Adapter implements ItemMoveCal
 
         public void bind(Producto producto) {
 
-            mAuth = FirebaseAuth.getInstance();
-            FirebaseUser currentUser = mAuth.getCurrentUser();
-
             textViewDescripcionCelda.setText(producto.getTitle());
             String precio = "$ " + producto.getPrice();
             textViewPrecioCelda.setText(precio);
@@ -206,6 +199,13 @@ public class ProductoAdapter extends RecyclerView.Adapter implements ItemMoveCal
             url = url.substring(4);
             url = https + url;
             Glide.with(itemView).load(url).into(imageViewCelda);
+
+            setFavs(producto);
+        }
+
+        private void setFavs(Producto producto) {
+            mAuth = FirebaseAuth.getInstance();
+            FirebaseUser currentUser = mAuth.getCurrentUser();
 
             if (currentUser != null) {
 
@@ -239,7 +239,4 @@ public class ProductoAdapter extends RecyclerView.Adapter implements ItemMoveCal
             public void informarSeleccion(Integer adapterPosition);
         }
 
-        public interface FavsListener {
-            public void informarSeleccion();
-        }
     }

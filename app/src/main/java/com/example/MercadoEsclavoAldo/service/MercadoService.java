@@ -23,5 +23,4 @@ public interface MercadoService {
 
 
 
-    // search/multi?api_key=e00143389939e722c4dd551059122bbf&language=es-AR&page=1&include_adult=false
 }

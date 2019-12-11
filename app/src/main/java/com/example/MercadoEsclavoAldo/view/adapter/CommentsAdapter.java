@@ -3,7 +3,6 @@ package com.example.MercadoEsclavoAldo.view.adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -11,9 +10,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.MercadoEsclavoAldo.R;
 import com.example.MercadoEsclavoAldo.model.Comment;
-import com.example.MercadoEsclavoAldo.model.Producto;
 
-import java.util.ArrayList;
+
 import java.util.List;
 
 import butterknife.BindView;
@@ -21,7 +19,7 @@ import butterknife.ButterKnife;
 
 public class CommentsAdapter extends RecyclerView.Adapter{
 
-    private List<Comment> commentsList = new ArrayList<>();
+    private List<Comment> commentsList;
 
 
     public CommentsAdapter(List<Comment> commentsList) {
@@ -56,6 +54,8 @@ public class CommentsAdapter extends RecyclerView.Adapter{
 
         @BindView(R.id.textViewComentarioCelda)
         TextView textViewComentarioCelda;
+        @BindView(R.id.textViewUsernameComentrioCelda)
+        TextView textViewUsernameComentrioCelda;
 
 
         public CommentViewHolder(@NonNull View itemView) {
@@ -66,6 +66,7 @@ public class CommentsAdapter extends RecyclerView.Adapter{
 
 
         public void bind(Comment comment) {
+            textViewUsernameComentrioCelda.setText(comment.getUsername());
             String aComment = "''" + comment.getComment() + "''";
             textViewComentarioCelda.setText(aComment);
 

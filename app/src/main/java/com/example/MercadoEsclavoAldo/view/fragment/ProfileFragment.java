@@ -3,12 +3,11 @@ package com.example.MercadoEsclavoAldo.view.fragment;
 
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,26 +15,14 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.MercadoEsclavoAldo.R;
-import com.example.MercadoEsclavoAldo.controller.ProductoController;
-import com.example.MercadoEsclavoAldo.model.Producto;
-import com.example.MercadoEsclavoAldo.model.ProductoDetalles;
+
 import com.example.MercadoEsclavoAldo.model.User;
-import com.example.MercadoEsclavoAldo.utils.ResultListener;
-import com.example.MercadoEsclavoAldo.view.adapter.ProductDetailsAdapter;
-import com.example.MercadoEsclavoAldo.view.adapter.ProductoAdapter;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -43,16 +30,15 @@ import butterknife.ButterKnife;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ProfileFragment extends Fragment implements ProductDetailsAdapter.ProductoAdapterListener, LoginFragment.favListener {
+public class ProfileFragment extends Fragment {
 
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
-    LoginFragment loginFragment = new LoginFragment();
-    private List<String> idList = new ArrayList<>();
-    private List<ProductoDetalles> favoritosList = new ArrayList<>();
+    private LoginFragment loginFragment = new LoginFragment();
 
-    @BindView(R.id.recyclerProfile)
-    RecyclerView recyclerProfile;
+
+
+
     @BindView(R.id.textViewNombreProfile)
     TextView textViewNombreProfile;
     @BindView(R.id.textViewApellidoProfile)
@@ -65,11 +51,14 @@ public class ProfileFragment extends Fragment implements ProductDetailsAdapter.P
     LinearLayout linearMisDatosProfile;
     @BindView(R.id.textViewUserNameProfile)
     TextView textViewUserNameProfile;
+    @BindView(R.id.linearContendeorFavprotpsProfile)
+    LinearLayout linearContendeorFavprotpsProfile;
 
 
     public ProfileFragment() {
         // Required empty public constructor
     }
+
 
 
     @Override
@@ -82,19 +71,17 @@ public class ProfileFragment extends Fragment implements ProductDetailsAdapter.P
 
         setTextsAndFavs();
 
+        setFavoritos();
+
 
         return view;
     }
 
-    public LinearLayout getLinearMisDatosProfile() {
-        return linearMisDatosProfile;
-    }
 
-    public void setLinearMisDatosProfile(LinearLayout linearMisDatosProfile) {
-        this.linearMisDatosProfile = linearMisDatosProfile;
-    }
 
     private void setTextsAndFavs() {
+
+
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
         String id = currentUser.getUid();
@@ -102,9 +89,6 @@ public class ProfileFragment extends Fragment implements ProductDetailsAdapter.P
         DocumentReference docRef = db.collection("usuarios").document(id);
         docRef.get().addOnSuccessListener(documentSnapshot -> {
             User user = documentSnapshot.toObject(User.class);
-            String asd = user.getNombre();
-            idList = user.getFavoritos();
-            loginFragment.searchFavs(ProfileFragment.this);
 
             textViewMailProfile.setText(user.getMail());
             textViewEdadProfile.setText(user.getEdad());
@@ -116,18 +100,17 @@ public class ProfileFragment extends Fragment implements ProductDetailsAdapter.P
     }
 
 
-    @Override
-    public void informarSeleccion(Integer adapterPosition) {
+
+
+
+    private void setFavoritos() {
+        FavsFragment favsFragment = new FavsFragment();
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction unaTransaccion = fragmentManager.beginTransaction();
+        unaTransaccion.replace(R.id.linearContendeorFavprotpsProfile, favsFragment);
+        unaTransaccion.commit();
 
     }
 
-    @Override
-    public void sendState(List<ProductoDetalles> productoDetalles) {
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
-        recyclerProfile.setLayoutManager(layoutManager);
-        ProductDetailsAdapter productDetailsAdapter = new ProductDetailsAdapter(productoDetalles, ProfileFragment.this);
-        recyclerProfile.setAdapter(productDetailsAdapter);
-        recyclerProfile.setItemViewCacheSize(20);
-        recyclerProfile.setHasFixedSize(true);
-    }
+
 }

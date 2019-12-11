@@ -125,6 +125,8 @@ public class LoginFragment extends Fragment {
         db = FirebaseFirestore.getInstance();
         setButtons();
 
+        setVisibilities();
+
 
         return view;
     }
@@ -154,7 +156,7 @@ public class LoginFragment extends Fragment {
         });
 
         buttonEnviarFragmentLogin.setOnClickListener(v -> {
-                    Boolean regVacio = (editTextUserNameFragmentLogin.getText().equals("")||editTextNombreFragmentLogin.getText().equals("") || editTextApellidoFragmentLogin.getText().equals("") || editTextEdadFragmentLogin.getText().equals("") || editTextEmailFragmentLogin.getText().equals("") || editTextPasswordFragmentLogin.getText().equals(""));
+                    Boolean regVacio = (editTextUserNameFragmentLogin.getText().equals("") || editTextNombreFragmentLogin.getText().equals("") || editTextApellidoFragmentLogin.getText().equals("") || editTextEdadFragmentLogin.getText().equals("") || editTextEmailFragmentLogin.getText().equals("") || editTextPasswordFragmentLogin.getText().equals(""));
                     if (!regVacio) {
                         registerUser();
                     } else
@@ -212,7 +214,7 @@ public class LoginFragment extends Fragment {
                 .addOnCompleteListener(getActivity(), task -> {
                     if (task.isSuccessful()) {
                         FirebaseUser user = mAuth.getCurrentUser();
-                        IrAlHome(user.getEmail());
+                        IrAlHome();
 
                     } else {
                         // If sign in fails, display a message to the user.
@@ -254,12 +256,8 @@ public class LoginFragment extends Fragment {
                 });
     }
 
-    private void IrAlHome(String userName) {
-        Bundle bundle = new Bundle();
-        bundle.putString("userEmail", userName);
-
+    private void IrAlHome() {
         Intent intent = new Intent(getContext(), MainActivity.class);
-        intent.putExtras(bundle);
 
         startActivity(intent);
     }
@@ -267,7 +265,6 @@ public class LoginFragment extends Fragment {
     private void registerUser() {
         String emailUser = editTextEmailFragmentLogin.getText().toString();
         String password = editTextPasswordFragmentLogin.getText().toString();
-
         String nombre = editTextNombreFragmentLogin.getText().toString();
         String apellido = editTextApellidoFragmentLogin.getText().toString();
         String edad = editTextEdadFragmentLogin.getText().toString();
@@ -279,11 +276,9 @@ public class LoginFragment extends Fragment {
                     if (task.isSuccessful()) {
                         FirebaseUser user = mAuth.getCurrentUser();
                         userId = user.getUid();
-                        setPerfilFirebase(userName,emailUser, password, nombre, apellido, edad);
-
+                        setPerfilFirebase(userName, emailUser, password, nombre, apellido, edad);
                         Toast.makeText(getContext(), "Se registró con exito", Toast.LENGTH_SHORT).show();
-                        // String name = user.getDisplayName();
-                        IrAlHome(user.getEmail());
+                        IrAlHome();
                         cardViewRegistroLogin.setVisibility(View.GONE);
                     } else {
                         Toast.makeText(getContext(), "Falló el registro!", Toast.LENGTH_SHORT).show();
@@ -291,7 +286,7 @@ public class LoginFragment extends Fragment {
                 });
     }
 
-    private void setPerfilFirebase(String userName,String emailUser, String password, String nombre, String apellido, String edad) {
+    private void setPerfilFirebase(String userName, String emailUser, String password, String nombre, String apellido, String edad) {
 
         User user = new User();
         user.setUserName(userName);
@@ -306,19 +301,6 @@ public class LoginFragment extends Fragment {
     }
 
 
-    /*public logListener getLogListener() {
-        return logListener;
-    }
-
-    public void setLogListener(logListener logListener) {
-        this.logListener = logListener;
-    }*/
-
-
-    public FirebaseAuth getmAuth() {
-        return mAuth;
-    }
-
     public void setmAuth(FirebaseAuth mAuth) {
         this.mAuth = mAuth;
     }
@@ -332,15 +314,29 @@ public class LoginFragment extends Fragment {
                     if (task.isSuccessful()) {
                         FirebaseUser user = mAuth.getCurrentUser();
                         userId = user.getUid();
-                        //String name = user.getDisplayName();
+                        setVisibilities();
                         Toast.makeText(getContext(), "Exito!", Toast.LENGTH_SHORT).show();
-                        IrAlHome(user.getEmail());
+                        IrAlHome();
                     } else {
                         Toast.makeText(getContext(), "fallo ingreso", Toast.LENGTH_SHORT).show();
                     }
 
-                    // ...
                 });
+    }
+
+
+    public void setVisibilities() {
+        FirebaseUser user = mAuth.getCurrentUser();
+
+        if (user != null) {
+            linearLayoutIniciarSesionFragmentLogin.setVisibility(View.GONE);
+            textViewLogueadoLogin.setVisibility(View.VISIBLE);
+            textViewNoLogueadoLogin.setVisibility(View.GONE);
+        } else {
+            linearLayoutIniciarSesionFragmentLogin.setVisibility(View.VISIBLE);
+            textViewLogueadoLogin.setVisibility(View.GONE);
+            textViewNoLogueadoLogin.setVisibility(View.VISIBLE);
+        }
     }
 
     public void addToFavs(String id, Context context) {
@@ -360,7 +356,6 @@ public class LoginFragment extends Fragment {
         docRef.get().addOnSuccessListener(documentSnapshot -> {
             User user = documentSnapshot.toObject(User.class);
             FirebaseUser aCurrentUser = mAuth.getCurrentUser();
-            aCurrentUser = mAuth.getCurrentUser();
             String uId = aCurrentUser.getUid();
             favList = user.getFavoritos();
             favList.add(id);
@@ -375,7 +370,6 @@ public class LoginFragment extends Fragment {
     }
 
     public void removeFromFavs(String id, Context context) {
-     //   List<String> altFavList = favList;
         db = FirebaseFirestore.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
         userId = currentUser.getUid();
@@ -384,7 +378,6 @@ public class LoginFragment extends Fragment {
         docRef.get().addOnSuccessListener(documentSnapshot -> {
             User user = documentSnapshot.toObject(User.class);
             FirebaseUser aCurrentUser = mAuth.getCurrentUser();
-            aCurrentUser = mAuth.getCurrentUser();
             String uId = aCurrentUser.getUid();
             favList = user.getFavoritos();
             List<String> altFavList = favList;
@@ -416,7 +409,6 @@ public class LoginFragment extends Fragment {
         DocumentReference docRef = db.collection("usuarios").document(id);
         docRef.get().addOnSuccessListener(documentSnapshot -> {
             User user = documentSnapshot.toObject(User.class);
-            // String asd = user.getNombre();
             favList = user.getFavoritos();
 
             for (String anId : favList) {
@@ -435,13 +427,9 @@ public class LoginFragment extends Fragment {
         return productoList;
     }
 
-    /*public void Logout(Context context) {
-        FirebaseAuth.getInstance().signOut();
-        Toast.makeText(context, "Desconexion exitosa", Toast.LENGTH_SHORT).show();
-    }*/
 
     public interface favListener {
-        public void sendState(List<ProductoDetalles> productoDetalles);//, String name);
+        public void sendState(List<ProductoDetalles> productoDetalles);
     }
 
 

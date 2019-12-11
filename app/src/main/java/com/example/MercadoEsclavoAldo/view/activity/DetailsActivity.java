@@ -27,7 +27,6 @@ import butterknife.ButterKnife;
 public class DetailsActivity extends AppCompatActivity implements DetailsFragment.locationListener{
 
     private DetailsViewPagerAdapter detailsViewPagerAdapter;
-    private FragmentManager fragmentManager;
     private DetailsFragment detailsFragment = new DetailsFragment();
     private List<Fragment> fragmentList = new ArrayList<>();
 

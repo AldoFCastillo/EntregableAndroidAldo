@@ -14,21 +14,18 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
+
 import android.widget.TextView;
 
 import com.example.MercadoEsclavoAldo.R;
 
 import com.example.MercadoEsclavoAldo.controller.ProductoController;
 import com.example.MercadoEsclavoAldo.model.Producto;
-import com.example.MercadoEsclavoAldo.model.Result;
-import com.example.MercadoEsclavoAldo.utils.ResultListener;
-import com.example.MercadoEsclavoAldo.view.activity.DetailsActivity;
+
 import com.example.MercadoEsclavoAldo.utils.ItemMoveCallback;
 import com.example.MercadoEsclavoAldo.view.adapter.ProductoAdapter;
 
-import java.io.Serializable;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,9 +69,6 @@ public class HomeFragment extends Fragment implements ProductoAdapter.ProductoAd
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         ButterKnife.bind(this, view);
 
-
-
-
         setOfertas();
         refresh();
 
@@ -87,14 +81,14 @@ public class HomeFragment extends Fragment implements ProductoAdapter.ProductoAd
 
     }
 
-    private void setRecycler( String query, ProductoController productoController, ProductoAdapter productoAdapter) {
+    private void setRecycler(String query, ProductoController productoController, ProductoAdapter productoAdapter) {
 
         this.lastQuery = query;
-        ItemTouchHelper.Callback callback = new ItemMoveCallback(productoAdapter);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
         recyclerHomeFragment.setLayoutManager(layoutManager);
 
 
+        ItemTouchHelper.Callback callback = new ItemMoveCallback(productoAdapter);
         ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
         touchHelper.attachToRecyclerView(recyclerHomeFragment);
 
@@ -106,9 +100,9 @@ public class HomeFragment extends Fragment implements ProductoAdapter.ProductoAd
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                Integer actualPosition = layoutManager.findLastVisibleItemPosition() ;
+                Integer actualPosition = layoutManager.findLastVisibleItemPosition();
                 Integer lastPosition = layoutManager.getItemCount();
-                if (actualPosition.equals(lastPosition-4)) {
+                if (actualPosition.equals(lastPosition - 4)) {
                     nexPage(query, productoController, productoAdapter);
                 }
 
@@ -129,18 +123,18 @@ public class HomeFragment extends Fragment implements ProductoAdapter.ProductoAd
     public void setSearch(String query) {
         ProductoController productoController = new ProductoController();
 
-            productoController.getSearchResults(result -> {
+        productoController.getSearchResults(result -> {
 
-                productoList = result.getResults();
-                ProductoAdapter productoAdapter = new ProductoAdapter(productoList, HomeFragment.this);
-                setRecycler(query, productoController, productoAdapter);
-                textViewTituloBusquedaFragmentHome.setText(query);
+            productoList = result.getResults();
+            ProductoAdapter productoAdapter = new ProductoAdapter(productoList, HomeFragment.this);
+            setRecycler(query, productoController, productoAdapter);
+            textViewTituloBusquedaFragmentHome.setText(query);
 
-            }, query);
+        }, query);
 
     }
 
-    public void nexPage(String query, ProductoController productoController, ProductoAdapter productoAdapter){
+    public void nexPage(String query, ProductoController productoController, ProductoAdapter productoAdapter) {
 
         if (productoController.getMore()) {
             productoController.getSearchResults(result -> {

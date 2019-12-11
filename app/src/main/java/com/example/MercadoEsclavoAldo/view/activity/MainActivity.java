@@ -25,6 +25,7 @@ import com.example.MercadoEsclavoAldo.model.Producto;
 import com.example.MercadoEsclavoAldo.model.Result;
 import com.example.MercadoEsclavoAldo.model.User;
 import com.example.MercadoEsclavoAldo.view.fragment.AboutUsFragment;
+import com.example.MercadoEsclavoAldo.view.fragment.FavsFragment;
 import com.example.MercadoEsclavoAldo.view.fragment.HomeFragment;
 import com.example.MercadoEsclavoAldo.view.fragment.LoginFragment;
 import com.example.MercadoEsclavoAldo.view.fragment.ProfileFragment;
@@ -48,8 +49,7 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.noti
     private ProfileFragment profileFragment = new ProfileFragment();
     private FragmentManager fragmentManager;
     private LoginFragment loginFragment = new LoginFragment();
-    private String name = "Tu Nombre";
-    private Boolean logOk = false;
+    private FavsFragment favsFragment = new FavsFragment();
     private FirebaseAuth mAuth;
     private FirebaseUser currentUser;
 
@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.noti
 
         setToolbar();
 
-        setHeaderLogin(logOk);
+        setHeaderLogin(currentUser!=null);
 
 
     }
@@ -127,9 +127,7 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.noti
         }
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+
 
     private void setHeaderLogin(Boolean loginOk) {
         View hView = navigationViewHome.getHeaderView(0);
@@ -193,27 +191,27 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.noti
                     currentUser = mAuth.getCurrentUser();
                     if (currentUser != null) {
                         FirebaseAuth.getInstance().signOut();
-                        logOk = false;
+                        setFragment(homeFragment);
                         Toast.makeText(MainActivity.this, "Desconexion exitosa", Toast.LENGTH_SHORT).show();
-                        setHeaderLogin(logOk);
+                        setHeaderLogin(false);
                     } else
                         Toast.makeText(MainActivity.this, "Debes loguearte primero!", Toast.LENGTH_SHORT).show();
                     break;
 
                 case R.id.navigationViewPerfil:
-
+                    mAuth = FirebaseAuth.getInstance();
+                    currentUser = mAuth.getCurrentUser();
                     if (currentUser != null) {
-                        // profileFragment.getLinearMisDatosProfile().setVisibility(View.VISIBLE);
                         setFragment(profileFragment);
                     } else
                         Toast.makeText(MainActivity.this, "Debes loguearte primero!", Toast.LENGTH_SHORT).show();
                     break;
 
                 case R.id.navigationViewFavoritosItem:
-
+                    mAuth = FirebaseAuth.getInstance();
+                    currentUser = mAuth.getCurrentUser();
                     if (currentUser != null) {
-                        setFragment(profileFragment);
-                        //              profileFragment.getLinearMisDatosProfile().setVisibility(View.GONE);
+                        setFragment(favsFragment);
                     } else
                         Toast.makeText(MainActivity.this, "Debes loguearte primero!", Toast.LENGTH_SHORT).show();
                     break;
@@ -246,9 +244,6 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.noti
         startActivity(intent);
     }
 
-    public String getName() {
-        return name;
-    }
 
     @Override
     protected void onStart() {
@@ -268,11 +263,14 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.noti
                 String asd = user.getUserName();
                 textViewBienvenidaHeaderLogNombre.setText(asd);
             });
-            logOk = true;
-            setHeaderLogin(logOk);
+            setHeaderLogin(true);
             loginFragment.setmAuth(mAuth);
         }
     }
 
-
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        setFragment(homeFragment);
+    }
 }

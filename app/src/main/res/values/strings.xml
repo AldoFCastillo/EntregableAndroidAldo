@@ -63,5 +63,8 @@
     <string name="escribe_un_comentario_sobre_este_producto">Escribe un comentario sobre este producto</string>
     <string name="comentario_pregunta"><u>Queres dejar un comentario?</u></string>
     <string name="map_key">AIzaSyA7VwVw6iM6QSlyWJHLcaq4NhLekF-BZXo</string>
+    <string name="comentarios_sobre_el_producto">Comentarios sobre el producto</string>
+    <string name="enviar">enviar</string>
+    <string name="escribe_tu_nombre_de_ussuario">escribe tu nombre de ussuario</string>
 
 </resources>

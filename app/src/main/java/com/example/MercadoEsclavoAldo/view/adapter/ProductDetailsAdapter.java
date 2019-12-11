@@ -20,7 +20,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.util.ArrayList;
+
 import java.util.List;
 
 import butterknife.BindView;
@@ -28,7 +28,7 @@ import butterknife.ButterKnife;
 
 public class ProductDetailsAdapter extends RecyclerView.Adapter {
 
-    private List<ProductoDetalles> favList = new ArrayList<>();
+    private List<ProductoDetalles> favList;
     private ProductoAdapterListener productoAdapterListener;
     private LoginFragment loginFragment = new LoginFragment();
     private FirebaseFirestore db;
@@ -158,9 +158,6 @@ public class ProductDetailsAdapter extends RecyclerView.Adapter {
         public void informarSeleccion(Integer adapterPosition);
     }
 
-    public interface FavsListener {
-        public void informarSeleccion();
-    }
 
 
 }
