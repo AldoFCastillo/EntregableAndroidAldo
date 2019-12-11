@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.MercadoEsclavoAldo.R;
+import com.example.MercadoEsclavoAldo.controller.ProductoController;
 import com.example.MercadoEsclavoAldo.model.ProductoDetalles;
 import com.example.MercadoEsclavoAldo.view.adapter.ProductDetailsAdapter;
 
@@ -29,6 +30,7 @@ public class FavsFragment extends Fragment implements LoginFragment.favListener,
     RecyclerView recyclerFavs;
 
     private LoginFragment loginFragment = new LoginFragment();
+    private ProductoController productoController = new ProductoController();
 
 
     public FavsFragment() {
@@ -45,6 +47,7 @@ public class FavsFragment extends Fragment implements LoginFragment.favListener,
         ButterKnife.bind(this, view);
 
         loginFragment.searchFavs(FavsFragment.this);
+
 
 
 

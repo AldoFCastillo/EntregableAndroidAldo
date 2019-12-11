@@ -15,6 +15,7 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.example.MercadoEsclavoAldo.R;
 
+import com.example.MercadoEsclavoAldo.controller.ProductoController;
 import com.example.MercadoEsclavoAldo.model.Producto;
 
 import com.example.MercadoEsclavoAldo.model.User;
@@ -31,12 +32,13 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class ProductoAdapter extends RecyclerView.Adapter implements ItemMoveCallback.ItemTouchHelperContract {
+public class ProductoAdapter extends RecyclerView.Adapter implements ItemMoveCallback.ItemTouchHelperContract{
 
     private List<Producto> productoList;
     private ProductoAdapterListener productoAdapterListener;
     private FirebaseFirestore db;
     private LoginFragment loginFragment = new LoginFragment();
+    private ProductoController productoController = new ProductoController();
 
     public ProductoAdapter(List<Producto> productoList, ProductoAdapterListener productoAdapterListener) {
 
@@ -97,6 +99,7 @@ public class ProductoAdapter extends RecyclerView.Adapter implements ItemMoveCal
     public void onRowClear(ProductoViewHolder myViewHolder) {
         myViewHolder.rowView.setBackgroundColor(Color.WHITE);
     }
+
 
     public class ProductoViewHolder extends RecyclerView.ViewHolder {
 
@@ -204,6 +207,7 @@ public class ProductoAdapter extends RecyclerView.Adapter implements ItemMoveCal
         }
 
         private void setFavs(Producto producto) {
+
             mAuth = FirebaseAuth.getInstance();
             FirebaseUser currentUser = mAuth.getCurrentUser();
 

@@ -49,6 +49,7 @@ public class HomeFragment extends Fragment implements ProductoAdapter.ProductoAd
     private String lastQuery;
 
 
+
     private notificador notificadorFragment;
 
 
@@ -69,6 +70,7 @@ public class HomeFragment extends Fragment implements ProductoAdapter.ProductoAd
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         ButterKnife.bind(this, view);
 
+
         setOfertas();
         refresh();
 
@@ -82,6 +84,7 @@ public class HomeFragment extends Fragment implements ProductoAdapter.ProductoAd
     }
 
     private void setRecycler(String query, ProductoController productoController, ProductoAdapter productoAdapter) {
+
 
         this.lastQuery = query;
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);

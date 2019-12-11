@@ -21,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.MercadoEsclavoAldo.R;
+import com.example.MercadoEsclavoAldo.controller.ProductoController;
 import com.example.MercadoEsclavoAldo.model.Producto;
 import com.example.MercadoEsclavoAldo.model.Result;
 import com.example.MercadoEsclavoAldo.model.User;
@@ -32,17 +33,14 @@ import com.example.MercadoEsclavoAldo.view.fragment.ProfileFragment;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 
-import java.io.Serializable;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity implements HomeFragment.notificador {
+public class MainActivity extends AppCompatActivity implements HomeFragment.notificador, ProductoController.sendResponseUser {
 
     private HomeFragment homeFragment = new HomeFragment();
     private AboutUsFragment aboutUSFragment = new AboutUsFragment();
@@ -50,8 +48,10 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.noti
     private FragmentManager fragmentManager;
     private LoginFragment loginFragment = new LoginFragment();
     private FavsFragment favsFragment = new FavsFragment();
+    private ProductoController productoController = new ProductoController();
     private FirebaseAuth mAuth;
     private FirebaseUser currentUser;
+    private Boolean isNull;
 
     @BindView(R.id.contenedorDeFragmentsMain)
     CoordinatorLayout coordinatorLayout;
@@ -78,11 +78,13 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.noti
 
         setFragment(homeFragment);
 
+        productoController.setSendResponseUser(this);
+        productoController.getUser();
+
         setNavigationView();
 
         setToolbar();
 
-        setHeaderLogin(currentUser!=null);
 
 
     }
@@ -105,8 +107,8 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.noti
             public boolean onQueryTextChange(String newText) {
                 if (newText.isEmpty()) {
                     homeFragment.refresh();
-                }else
-                homeFragment.setSearch(newText);
+                } else
+                    homeFragment.setSearch(newText);
                 return false;
             }
         });
@@ -128,8 +130,7 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.noti
     }
 
 
-
-    private void setHeaderLogin(Boolean loginOk) {
+    private void setHeaderLogin(Boolean userNull) {
         View hView = navigationViewHome.getHeaderView(0);
         textViewIngresarHeader = hView.findViewById(R.id.textViewIngresarHeader);
         textViewBienvenidaHeaderLogNombre = hView.findViewById(R.id.textViewBienvenidaHeaderLogNombre);
@@ -137,7 +138,7 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.noti
         textViewBienvenidaHeaderNavigation = hView.findViewById(R.id.textViewBienvenidaHeaderNavigation);
         textViewTextHeaderNavigation = hView.findViewById(R.id.textViewTextHeaderNavigation);
 
-        if (loginOk) {
+        if (!userNull) {
             textViewIngresarHeader.setVisibility(View.GONE);
             textViewTextHeaderNavigation.setVisibility(View.GONE);
             textViewBienvenidaHeaderNavigation.setVisibility(View.GONE);
@@ -176,9 +177,8 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.noti
 
     private void setNavigationView() {
 
-        mAuth = FirebaseAuth.getInstance();
-        currentUser = mAuth.getCurrentUser();
-
+        productoController.setSendResponseUser(this);
+        productoController.getUser();
         navigationViewHome.setNavigationItemSelectedListener(menuItem -> {
 
             switch (menuItem.getItemId()) {
@@ -187,9 +187,7 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.noti
                     break;
 
                 case R.id.navigationViewCerrarSesionItem:
-                    mAuth = FirebaseAuth.getInstance();
-                    currentUser = mAuth.getCurrentUser();
-                    if (currentUser != null) {
+                    if (!isNull) {
                         FirebaseAuth.getInstance().signOut();
                         setFragment(homeFragment);
                         Toast.makeText(MainActivity.this, "Desconexion exitosa", Toast.LENGTH_SHORT).show();
@@ -199,18 +197,14 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.noti
                     break;
 
                 case R.id.navigationViewPerfil:
-                    mAuth = FirebaseAuth.getInstance();
-                    currentUser = mAuth.getCurrentUser();
-                    if (currentUser != null) {
+                    if (!isNull) {
                         setFragment(profileFragment);
                     } else
                         Toast.makeText(MainActivity.this, "Debes loguearte primero!", Toast.LENGTH_SHORT).show();
                     break;
 
                 case R.id.navigationViewFavoritosItem:
-                    mAuth = FirebaseAuth.getInstance();
-                    currentUser = mAuth.getCurrentUser();
-                    if (currentUser != null) {
+                    if (!isNull) {
                         setFragment(favsFragment);
                     } else
                         Toast.makeText(MainActivity.this, "Debes loguearte primero!", Toast.LENGTH_SHORT).show();
@@ -232,7 +226,6 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.noti
     }
 
 
-
     @Override
     public void enviarNotificacion(Integer adapterPosition, List<Producto> productoList) {
         Intent intent = new Intent(this, DetailsActivity.class);
@@ -248,29 +241,30 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.noti
     @Override
     protected void onStart() {
         super.onStart();
-
-        mAuth = FirebaseAuth.getInstance();
-        FirebaseFirestore db;
-
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-
-        if (currentUser != null) {
-            String id = currentUser.getUid();
-            db = FirebaseFirestore.getInstance();
-            DocumentReference docRef = db.collection("usuarios").document(id);
-            docRef.get().addOnSuccessListener(documentSnapshot -> {
-                User user = documentSnapshot.toObject(User.class);
-                String asd = user.getUserName();
-                textViewBienvenidaHeaderLogNombre.setText(asd);
-            });
-            setHeaderLogin(true);
-            loginFragment.setmAuth(mAuth);
-        }
+        productoController.setSendResponseUser(this);
+        productoController.getUser();
+        loginFragment.setmAuth(mAuth);
     }
+
+
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
         setFragment(homeFragment);
     }
+
+    @Override
+    public void notifUser(User user) {
+        String asd = user.getUserName();
+        textViewBienvenidaHeaderLogNombre.setText(asd);
+    }
+
+    @Override
+    public void notifNull(Boolean isNull) {
+        this.isNull=isNull;
+        setHeaderLogin(isNull);
+    }
+
+
 }

@@ -28,14 +28,10 @@ import com.example.MercadoEsclavoAldo.model.User;
 import com.example.MercadoEsclavoAldo.view.adapter.CommentsAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -43,16 +39,18 @@ import butterknife.ButterKnife;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class DetailsFragment extends Fragment {
+public class DetailsFragment extends Fragment implements ProductoController.sendResponseUser, ProductoController.sendResponseComment, ProductoController.sendResponseProduct {
 
     public static final String KEY_PRODUCTO = "producto";
     private List<Comment> commentsList = new ArrayList<>();
-    private Map<String, String> commentMap = new HashMap<>();
+    private ProductoController productoController = new ProductoController();
     private CommentsAdapter commentsAdapter;
     private String id;
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
     private locationListener locationListener;
+    private Boolean isNull;
+    private String userName;
 
     @BindView(R.id.imageViewDetails)
     ImageView imageViewDetails;
@@ -104,10 +102,11 @@ public class DetailsFragment extends Fragment {
 
         id = producto.getId();
 
+        setController();
+
         setDetails(view);
 
-        setRecyclerComments();
-
+        setComments();
 
         setQuestionComments();
 
@@ -121,6 +120,13 @@ public class DetailsFragment extends Fragment {
 
 
         return view;
+    }
+
+    private void setController() {
+        productoController.setSendResponseUser(DetailsFragment.this);
+        productoController.setSendResponseComment(this);
+        productoController.setSendResponseProduct(this);
+        productoController.getUser();
     }
 
 
@@ -143,71 +149,56 @@ public class DetailsFragment extends Fragment {
 
     private void setEnviarButton() {
         buttonEnviarComentarios.setOnClickListener(v -> {
-            mAuth = FirebaseAuth.getInstance();
-            FirebaseUser currentUser = mAuth.getCurrentUser();
-            if (currentUser != null) {
-                if (editTextComentarios.equals("")) {
+
+            if (!isNull) {
+                if (editTextComentarios.getText().equals(" ")) {
                     Toast.makeText(getContext(), "Debes escribir un comentario", Toast.LENGTH_SHORT).show();
                 } else {
                     Comment comment = new Comment();
                     comment.setComment(editTextComentarios.getText().toString());
-                    getUserName(comment);
+                    comment.setUsername(userName);
                     commentsList.add(comment);
                     Producto aProduct = new Producto();
                     aProduct.setCommentList(commentsList);
-                    db.collection("productos").document(id).set(aProduct).addOnSuccessListener(aVoid -> {
-                        Toast.makeText(getContext(), "Se guardo tu comentario!", Toast.LENGTH_SHORT).show();
-                        editTextComentarios.setText("");
-                        recyclerComentarios.setAdapter(commentsAdapter);
-
-                    }).addOnFailureListener(e ->
-                            Toast.makeText(getContext(), "Error!", Toast.LENGTH_SHORT).show());
-
+                    setControllerListeners(productoController);
+                    productoController.addComment(id, aProduct);
                 }
 
-            }else Toast.makeText(getContext(), "Debes loguearte primero!", Toast.LENGTH_SHORT).show();
+            } else
+                Toast.makeText(getContext(), "Debes loguearte primero!", Toast.LENGTH_SHORT).show();
         });
-
 
 
     }
 
-    public void getUserName(Comment comment){
-
-        mAuth = FirebaseAuth.getInstance();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        String id = currentUser.getUid();
-        db = FirebaseFirestore.getInstance();
-        DocumentReference docRef = db.collection("usuarios").document(id);
-        docRef.get().addOnSuccessListener(documentSnapshot -> {
-            User user = documentSnapshot.toObject(User.class);
-            String userN = user.getUserName();
-            comment.setUsername(user.getUserName());
-        });
-
-    }
 
 
     public void setLocationListener(locationListener locationListener) {
         this.locationListener = locationListener;
     }
 
-    private void setRecyclerComments() {
-        db = FirebaseFirestore.getInstance();
-        DocumentReference docRef = db.collection("productos").document(id);
-        docRef.get().addOnSuccessListener(documentSnapshot -> {
-            Producto producto1 = documentSnapshot.toObject(Producto.class);
-            if (producto1 != null) {
-                commentsList = producto1.getCommentList();
-                commentsAdapter = new CommentsAdapter(commentsList);
-                RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
-                recyclerComentarios.setLayoutManager(layoutManager);
-                recyclerComentarios.setAdapter(commentsAdapter);
-                recyclerComentarios.setItemViewCacheSize(20);
-                recyclerComentarios.setHasFixedSize(true);
-            }
+    private void setControllerListeners(ProductoController productoController){
+        productoController.setSendResponseUser(DetailsFragment.this);
+        productoController.setSendResponseComment(DetailsFragment.this);
+        productoController.setSendResponseProduct(DetailsFragment.this);
 
-        });
+    }
+
+    private void setComments(){
+        setControllerListeners(productoController);
+        productoController.getProductFb(id);
+    }
+
+    private void setRecyclerComments(Producto producto1) {
+        if (producto1 != null) {
+            commentsList = producto1.getCommentList();
+            commentsAdapter = new CommentsAdapter(commentsList);
+            RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
+            recyclerComentarios.setLayoutManager(layoutManager);
+            recyclerComentarios.setAdapter(commentsAdapter);
+            recyclerComentarios.setItemViewCacheSize(20);
+            recyclerComentarios.setHasFixedSize(true);
+        }
     }
 
     private void setDetails(View view) {
@@ -234,7 +225,32 @@ public class DetailsFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        setRecyclerComments();
+        setComments();
+    }
+
+    @Override
+    public void notifUser(User user) {
+        userName = user.getUserName();
+
+    }
+
+    @Override
+    public void notifNull(Boolean isNull) {
+        this.isNull = isNull;
+    }
+
+    @Override
+    public void notifAddComment(Boolean ok) {
+        if (ok) {
+            Toast.makeText(getContext(), "Se guardo tu comentario!", Toast.LENGTH_SHORT).show();
+            editTextComentarios.setText("");
+            recyclerComentarios.setAdapter(commentsAdapter);
+        } else Toast.makeText(getContext(), "Error!", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void notifProduct(Producto producto1) {
+        setRecyclerComments(producto1);
     }
 
 

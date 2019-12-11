@@ -105,7 +105,7 @@ public class ProductDetailsAdapter extends RecyclerView.Adapter {
             });*/
         }
 
-        private Boolean addToFavs() {
+        /*private Boolean addToFavs() {
 
             Boolean ok = false;
             mAuth = FirebaseAuth.getInstance();
@@ -120,7 +120,7 @@ public class ProductDetailsAdapter extends RecyclerView.Adapter {
             }
             return ok;
 
-        }
+        }*/
 
         public void bind(ProductoDetalles producto) {
 

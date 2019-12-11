@@ -12,6 +12,7 @@ import android.os.Bundle;
 
 
 import com.example.MercadoEsclavoAldo.R;
+import com.example.MercadoEsclavoAldo.controller.ProductoController;
 import com.example.MercadoEsclavoAldo.model.Producto;
 import com.example.MercadoEsclavoAldo.model.Result;
 import com.example.MercadoEsclavoAldo.view.adapter.DetailsViewPagerAdapter;
@@ -33,6 +34,7 @@ public class DetailsActivity extends AppCompatActivity implements DetailsFragmen
     public static final String KEY_POSITION = "position";
     public static final String KEY_PRODUCTOS = "productos";
 
+
     @BindView(R.id.viewPagerDetails)
     ViewPager viewPagerDetails;
     @BindView(R.id.toolbarDetails)
@@ -41,6 +43,7 @@ public class DetailsActivity extends AppCompatActivity implements DetailsFragmen
 
     private Integer adapterPosition;
     private List<Producto> productoList = new ArrayList<>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +62,8 @@ public class DetailsActivity extends AppCompatActivity implements DetailsFragmen
         Result result = (Result) bundle.getSerializable(KEY_PRODUCTOS);
         productoList = result.getResults();
         adapterPosition = bundle.getInt(KEY_POSITION);
+
+
         cargarListaDeProductos(productoList);
         viewPagerDetails.setCurrentItem(adapterPosition);
 
@@ -72,8 +77,7 @@ public class DetailsActivity extends AppCompatActivity implements DetailsFragmen
 
 
     private void cargarListaDeProductos(List<Producto> productoList) {
-        for (Object object : productoList) {
-            Producto producto = (Producto) object;
+        for (Producto producto : productoList) {
             DetailsFragment detailsFragment = DetailsFragment.getInstance(producto);
             detailsFragment.setLocationListener(DetailsActivity.this);
             fragmentList.add(detailsFragment);
