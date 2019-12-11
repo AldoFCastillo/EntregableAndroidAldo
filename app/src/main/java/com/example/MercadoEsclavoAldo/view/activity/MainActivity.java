@@ -191,7 +191,7 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.noti
                         FirebaseAuth.getInstance().signOut();
                         setFragment(homeFragment);
                         Toast.makeText(MainActivity.this, "Desconexion exitosa", Toast.LENGTH_SHORT).show();
-                        setHeaderLogin(false);
+                        setHeaderLogin(true);
                     } else
                         Toast.makeText(MainActivity.this, "Debes loguearte primero!", Toast.LENGTH_SHORT).show();
                     break;
