@@ -230,6 +230,11 @@ public class ProductoAdapter extends RecyclerView.Adapter implements ItemMoveCal
         }
     }
 
+    public void addProductList(List<Producto> productoList){
+        this.productoList=productoList;
+        notifyDataSetChanged();
+    }
+
         public interface ProductoAdapterListener {
             public void informarSeleccion(Integer adapterPosition);
         }

@@ -28,6 +28,41 @@
                 android:textColor="@color/colorTextoOscuro"
                 android:textSize="20sp" />
 
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="90dp"
+                android:elevation="3dp"
+                app:cardCornerRadius="3dp"
+                app:cardUseCompatPadding="true">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif"
+                        android:padding="10dp"
+                        android:text="Nombre de usuario"
+                        android:textColor="@color/colorTextoOscuro"
+                        android:textSize="20sp" />
+
+                    <TextView
+                        android:id="@+id/textViewUserNameProfile"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif"
+                        android:paddingStart="10dp"
+                        android:text="Nombre de usuario"
+                        android:textColor="@color/colorTextoClaro"
+                        android:textSize="20sp" />
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="90dp"

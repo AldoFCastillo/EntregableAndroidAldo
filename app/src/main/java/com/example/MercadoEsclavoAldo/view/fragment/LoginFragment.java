@@ -84,6 +84,8 @@ public class LoginFragment extends Fragment {
     LoginButton loginButton;
     @BindView(R.id.sign_in_button)
     SignInButton signInButton;
+    @BindView(R.id.editTextUserNameFragmentLogin)
+    EditText editTextUserNameFragmentLogin;
     @BindView(R.id.editTextNombreFragmentLogin)
     EditText editTextNombreFragmentLogin;
     @BindView(R.id.editTextApellidoFragmentLogin)
@@ -152,7 +154,7 @@ public class LoginFragment extends Fragment {
         });
 
         buttonEnviarFragmentLogin.setOnClickListener(v -> {
-                    Boolean regVacio = (editTextNombreFragmentLogin.getText().equals("") || editTextApellidoFragmentLogin.getText().equals("") || editTextEdadFragmentLogin.getText().equals("") || editTextEmailFragmentLogin.getText().equals("") || editTextPasswordFragmentLogin.getText().equals(""));
+                    Boolean regVacio = (editTextUserNameFragmentLogin.getText().equals("")||editTextNombreFragmentLogin.getText().equals("") || editTextApellidoFragmentLogin.getText().equals("") || editTextEdadFragmentLogin.getText().equals("") || editTextEmailFragmentLogin.getText().equals("") || editTextPasswordFragmentLogin.getText().equals(""));
                     if (!regVacio) {
                         registerUser();
                     } else
@@ -269,6 +271,7 @@ public class LoginFragment extends Fragment {
         String nombre = editTextNombreFragmentLogin.getText().toString();
         String apellido = editTextApellidoFragmentLogin.getText().toString();
         String edad = editTextEdadFragmentLogin.getText().toString();
+        String userName = editTextUserNameFragmentLogin.getText().toString();
 
 
         mAuth.createUserWithEmailAndPassword(emailUser, password)
@@ -276,7 +279,7 @@ public class LoginFragment extends Fragment {
                     if (task.isSuccessful()) {
                         FirebaseUser user = mAuth.getCurrentUser();
                         userId = user.getUid();
-                        setPerfilFirebase(emailUser, password, nombre, apellido, edad);
+                        setPerfilFirebase(userName,emailUser, password, nombre, apellido, edad);
 
                         Toast.makeText(getContext(), "Se registró con exito", Toast.LENGTH_SHORT).show();
                         // String name = user.getDisplayName();
@@ -288,9 +291,10 @@ public class LoginFragment extends Fragment {
                 });
     }
 
-    private void setPerfilFirebase(String emailUser, String password, String nombre, String apellido, String edad) {
+    private void setPerfilFirebase(String userName,String emailUser, String password, String nombre, String apellido, String edad) {
 
         User user = new User();
+        user.setUserName(userName);
         user.setNombre(nombre);
         user.setApellido(apellido);
         user.setEdad(edad);

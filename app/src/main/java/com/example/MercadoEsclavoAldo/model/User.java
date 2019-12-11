@@ -10,9 +10,18 @@ public class User {
     private String edad;
     private String mail;
     private String password;
+    private String userName;
     private List<String> favoritos = new ArrayList<>();
 
     public User() {
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public String getNombre() {

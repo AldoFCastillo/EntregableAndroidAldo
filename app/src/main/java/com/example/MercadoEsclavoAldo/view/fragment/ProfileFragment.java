@@ -63,6 +63,8 @@ public class ProfileFragment extends Fragment implements ProductDetailsAdapter.P
     TextView textViewMailProfile;
     @BindView(R.id.linearMisDatosProfile)
     LinearLayout linearMisDatosProfile;
+    @BindView(R.id.textViewUserNameProfile)
+    TextView textViewUserNameProfile;
 
 
     public ProfileFragment() {
@@ -108,6 +110,7 @@ public class ProfileFragment extends Fragment implements ProductDetailsAdapter.P
             textViewEdadProfile.setText(user.getEdad());
             textViewApellidoProfile.setText(user.getApellido());
             textViewNombreProfile.setText(user.getNombre());
+            textViewUserNameProfile.setText(user.getUserName());
 
         });
     }

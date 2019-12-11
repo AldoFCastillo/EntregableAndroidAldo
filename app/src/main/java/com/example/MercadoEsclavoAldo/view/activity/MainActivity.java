@@ -2,6 +2,7 @@ package com.example.MercadoEsclavoAldo.view.activity;
 
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -9,6 +10,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -20,6 +23,7 @@ import android.widget.Toast;
 import com.example.MercadoEsclavoAldo.R;
 import com.example.MercadoEsclavoAldo.model.Producto;
 import com.example.MercadoEsclavoAldo.model.Result;
+import com.example.MercadoEsclavoAldo.model.User;
 import com.example.MercadoEsclavoAldo.view.fragment.AboutUsFragment;
 import com.example.MercadoEsclavoAldo.view.fragment.HomeFragment;
 import com.example.MercadoEsclavoAldo.view.fragment.LoginFragment;
@@ -27,6 +31,8 @@ import com.example.MercadoEsclavoAldo.view.fragment.ProfileFragment;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 
 import java.io.Serializable;
@@ -84,13 +90,36 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.noti
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.toolbar_menu, menu);
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        final SearchView searchView = (SearchView) menu.findItem(R.id.itemToolBarBuscar).getActionView();
+        MenuItem searchMenuItem = menu.findItem(R.id.itemToolBarBuscar);
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                homeFragment.setSearch(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if (newText.isEmpty()) {
+                    homeFragment.refresh();
+                }else
+                homeFragment.setSearch(newText);
+                return false;
+            }
+        });
+
         return true;
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.itemToolbarHome:
+                homeFragment.setOfertas();
                 setFragment(homeFragment);
                 return true;
             default:
@@ -98,6 +127,9 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.noti
         }
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
 
     private void setHeaderLogin(Boolean loginOk) {
         View hView = navigationViewHome.getHeaderView(0);
@@ -112,7 +144,6 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.noti
             textViewTextHeaderNavigation.setVisibility(View.GONE);
             textViewBienvenidaHeaderNavigation.setVisibility(View.GONE);
             textViewBienvenidaHeaderLog.setVisibility(View.VISIBLE);
-            textViewBienvenidaHeaderLogNombre.setText(name);
             textViewBienvenidaHeaderLogNombre.setVisibility(View.VISIBLE);
 
 
@@ -121,7 +152,6 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.noti
             textViewTextHeaderNavigation.setVisibility(View.VISIBLE);
             textViewBienvenidaHeaderNavigation.setVisibility(View.VISIBLE);
             textViewBienvenidaHeaderLog.setVisibility(View.GONE);
-            textViewBienvenidaHeaderLogNombre.setText(name);
             textViewBienvenidaHeaderLogNombre.setVisibility(View.GONE);
         }
 
@@ -173,7 +203,7 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.noti
                 case R.id.navigationViewPerfil:
 
                     if (currentUser != null) {
-                       // profileFragment.getLinearMisDatosProfile().setVisibility(View.VISIBLE);
+                        // profileFragment.getLinearMisDatosProfile().setVisibility(View.VISIBLE);
                         setFragment(profileFragment);
                     } else
                         Toast.makeText(MainActivity.this, "Debes loguearte primero!", Toast.LENGTH_SHORT).show();
@@ -183,7 +213,7 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.noti
 
                     if (currentUser != null) {
                         setFragment(profileFragment);
-          //              profileFragment.getLinearMisDatosProfile().setVisibility(View.GONE);
+                        //              profileFragment.getLinearMisDatosProfile().setVisibility(View.GONE);
                     } else
                         Toast.makeText(MainActivity.this, "Debes loguearte primero!", Toast.LENGTH_SHORT).show();
                     break;
@@ -225,12 +255,19 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.noti
         super.onStart();
 
         mAuth = FirebaseAuth.getInstance();
+        FirebaseFirestore db;
 
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
         if (currentUser != null) {
-            //String name = currentUser.getDisplayName();
-            textViewBienvenidaHeaderLogNombre.setText("Nombre");
+            String id = currentUser.getUid();
+            db = FirebaseFirestore.getInstance();
+            DocumentReference docRef = db.collection("usuarios").document(id);
+            docRef.get().addOnSuccessListener(documentSnapshot -> {
+                User user = documentSnapshot.toObject(User.class);
+                String asd = user.getUserName();
+                textViewBienvenidaHeaderLogNombre.setText(asd);
+            });
             logOk = true;
             setHeaderLogin(logOk);
             loginFragment.setmAuth(mAuth);

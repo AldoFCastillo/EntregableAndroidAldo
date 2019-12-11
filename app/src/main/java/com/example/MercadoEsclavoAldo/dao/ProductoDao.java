@@ -60,7 +60,7 @@ public class ProductoDao {
 
     public void getSearchResults(final ResultListener<Result> resultListener, String query, Integer limit, Integer offset) {
 
-        Call<Result> call = mercadoService.getBusqueda(limit, offset, query);
+        Call<Result> call = mercadoService.getBusqueda(query, offset, limit);
 
         call.enqueue(new Callback<Result>() {
             @Override
