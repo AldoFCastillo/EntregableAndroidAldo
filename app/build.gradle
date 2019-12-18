@@ -60,6 +60,11 @@ dependencies {
     //Google Maps
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
 
+    def lifecycle_version = "2.1.0"
+    // ViewModel and LiveData
+    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
+    annotationProcessor "androidx.lifecycle:lifecycle-compiler:$lifecycle_version"
+
 
 }
 

@@ -1,5 +1,9 @@
 package com.example.MercadoEsclavoAldo.dao;
 
+import android.app.Application;
+
+import androidx.lifecycle.MutableLiveData;
+
 import com.example.MercadoEsclavoAldo.R;
 import com.example.MercadoEsclavoAldo.model.Description;
 import com.example.MercadoEsclavoAldo.model.Producto;
@@ -22,6 +26,8 @@ public class ProductoDao {
     public static final String BASE_URL = "https://api.mercadolibre.com";
     protected Retrofit retrofit;
     MercadoService mercadoService;
+    private Application application;
+    private MutableLiveData<Result> mutableLiveData = new MutableLiveData<>();
 
     public ProductoDao() {
         retrofit = new Retrofit
@@ -31,8 +37,19 @@ public class ProductoDao {
                 .build();
 
         mercadoService = retrofit.create(MercadoService.class);
+
     }
 
+    public ProductoDao(Application application) {
+        this.application = application;
+        retrofit = new Retrofit
+                .Builder()
+                .baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        mercadoService = retrofit.create(MercadoService.class);
+    }
 
 
     public void getProductos(ResultListener resultListener) {
@@ -67,7 +84,11 @@ public class ProductoDao {
             public void onResponse(Call<Result> call, Response<Result> response) {
                 Result searchResult = response.body();
 
-                resultListener.onFinish(searchResult);
+                if (searchResult != null) {
+                    mutableLiveData.setValue(searchResult);
+
+                    resultListener.onFinish(searchResult);
+                }
 
             }
 
@@ -81,6 +102,36 @@ public class ProductoDao {
         });
 
     }
+
+    public MutableLiveData<Result> getSearchResults(String query, Integer limit, Integer offset) {
+
+        Call<Result> call = mercadoService.getBusqueda(query, offset, limit);
+
+        call.enqueue(new Callback<Result>() {
+            @Override
+            public void onResponse(Call<Result> call, Response<Result> response) {
+                Result searchResult = response.body();
+
+                if (searchResult != null) {
+                    mutableLiveData.setValue(searchResult);
+
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<Result> call, Throwable t) {
+                String message = t.getMessage();
+                System.out.println("ha ocurrido un error" + message);
+                t.printStackTrace();
+
+            }
+        });
+
+        return mutableLiveData;
+
+    }
+
 
 
     public void getProducto(final ResultListener<ProductoDetalles> resultListener, String path) {

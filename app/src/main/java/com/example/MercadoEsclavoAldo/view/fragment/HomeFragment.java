@@ -6,6 +6,9 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -22,8 +25,10 @@ import com.example.MercadoEsclavoAldo.R;
 import com.example.MercadoEsclavoAldo.controller.ProductoController;
 import com.example.MercadoEsclavoAldo.model.Producto;
 
+import com.example.MercadoEsclavoAldo.model.Result;
 import com.example.MercadoEsclavoAldo.utils.ItemMoveCallback;
 import com.example.MercadoEsclavoAldo.view.adapter.ProductoAdapter;
+import com.example.MercadoEsclavoAldo.viewmodel.MainViewModel;
 
 
 import java.util.ArrayList;
@@ -47,6 +52,7 @@ public class HomeFragment extends Fragment implements ProductoAdapter.ProductoAd
 
     private List<Producto> productoList = new ArrayList<>();
     private String lastQuery;
+    private MainViewModel mainViewModel;
 
 
 
@@ -69,7 +75,7 @@ public class HomeFragment extends Fragment implements ProductoAdapter.ProductoAd
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         ButterKnife.bind(this, view);
-
+        mainViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
 
         setOfertas();
         refresh();
@@ -79,8 +85,8 @@ public class HomeFragment extends Fragment implements ProductoAdapter.ProductoAd
 
 
     public void setOfertas() {
-        setSearch("ofertas");
-
+      //  setSearch("ofertas");
+          setSearchLiveData("ofertas");
     }
 
     private void setRecycler(String query, ProductoController productoController, ProductoAdapter productoAdapter) {
@@ -115,6 +121,38 @@ public class HomeFragment extends Fragment implements ProductoAdapter.ProductoAd
 
     }
 
+    private void setRecycler(String query,ProductoAdapter productoAdapter) {
+
+
+        this.lastQuery = query;
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
+        recyclerHomeFragment.setLayoutManager(layoutManager);
+
+
+        ItemTouchHelper.Callback callback = new ItemMoveCallback(productoAdapter);
+        ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
+        touchHelper.attachToRecyclerView(recyclerHomeFragment);
+
+        recyclerHomeFragment.setAdapter(productoAdapter);
+        swipeRefreshLayout.setRefreshing(false);
+        recyclerHomeFragment.setItemViewCacheSize(6);
+        recyclerHomeFragment.setHasFixedSize(true);
+        /*recyclerHomeFragment.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                Integer actualPosition = layoutManager.findLastVisibleItemPosition();
+                Integer lastPosition = layoutManager.getItemCount();
+                if (actualPosition.equals(lastPosition - 4)) {
+                    nexPage(query, productoController, productoAdapter);
+                }
+
+
+            }
+        });*/
+
+    }
+
 
     public void refresh() {
         swipeRefreshLayout.setOnRefreshListener(() -> {
@@ -137,6 +175,18 @@ public class HomeFragment extends Fragment implements ProductoAdapter.ProductoAd
 
     }
 
+    public void setSearchLiveData(String query){
+        mainViewModel.getSearchResult(query).observe(this, new Observer<Result>() {
+            @Override
+            public void onChanged(Result result) {
+                productoList = result.getResults();
+                ProductoAdapter productoAdapter = new ProductoAdapter(productoList, HomeFragment.this);
+                setRecycler(query, productoAdapter);
+                textViewTituloBusquedaFragmentHome.setText(query);
+            }
+        });
+    }
+
     public void nexPage(String query, ProductoController productoController, ProductoAdapter productoAdapter) {
 
         if (productoController.getMore()) {
@@ -152,7 +202,7 @@ public class HomeFragment extends Fragment implements ProductoAdapter.ProductoAd
     @Override
     public void onResume() {
         super.onResume();
-        refresh();
+        setSearch(lastQuery);
 
     }
 
